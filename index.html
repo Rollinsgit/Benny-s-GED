@@ -2,102 +2,97 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Benny's GED Tracker</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Benny's Performance Tracker</title>
     <style>
         :root { 
-            --math: #4a90e2; --rla: #ff5e62; --sci: #27ae60; --ss: #f39c12; 
-            --bg: #f4f7f6;
+            --math: #ff007a; /* Neon Pink */
+            --rla: #7000ff;  /* Electric Purple */
+            --sci: #00d4ff;  /* Cyan */
+            --ss: #ffcc00;   /* Gold */
+            --bg: #1a1a1a;   /* Dark Studio Floor */
+            --card: #2a2a2a;
         }
-        
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { 
-            font-family: -apple-system, sans-serif; 
-            background: var(--bg); 
-            margin: 0; 
-            padding-bottom: 40px;
-            transition: background 0.4s ease; /* Smooth background shift */
-        }
-
-        /* Dynamic Status Header */
+        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 40px; }
+        
         .status-header {
-            background: #fff; padding: 25px 20px; text-align: center;
-            box-shadow: 0 4px 12px rgba(0,0,0,0.08); margin-bottom: 20px;
-            transition: border-top 0.4s ease;
-            border-top: 8px solid var(--math); /* Initial color */
+            background: #000; padding: 25px 20px; text-align: center;
+            border-bottom: 3px solid var(--math); margin-bottom: 20px;
         }
-        
         .progress-outer { 
-            background: #eee; border-radius: 10px; height: 16px; 
+            background: #333; border-radius: 20px; height: 18px; 
             margin: 10px auto; max-width: 400px; overflow: hidden;
+            border: 1px solid #444;
         }
-        
         .bar { 
-            background: var(--math); /* Dynamic bar color */
-            height: 100%; width: 0%; 
-            transition: width 0.5s ease, background 0.4s ease; 
+            background: linear-gradient(90deg, var(--math), var(--rla)); 
+            height: 100%; width: 0%; transition: 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
         }
-        
-        #stat-text { font-weight: 800; color: #444; font-size: 1rem; margin-top: 5px; }
+        #stat-text { font-weight: bold; color: #aaa; font-size: 0.9rem; letter-spacing: 1px; }
 
-        /* Subject Buttons Grid */
         .button-grid {
             display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
             padding: 0 15px; max-width: 600px; margin: 0 auto 25px;
         }
-        
         .sub-btn {
-            padding: 18px; border: none; border-radius: 15px; color: white;
-            font-weight: 800; font-size: 0.9rem; cursor: pointer; opacity: 0.4;
-            transition: 0.3s; box-shadow: 0 4px 6px rgba(0,0,0,0.1);
-            letter-spacing: 1px;
+            padding: 15px; border: none; border-radius: 50px; color: white;
+            font-weight: 800; font-size: 0.85rem; cursor: pointer; opacity: 0.4;
+            transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
+            border: 2px solid transparent;
         }
-        
-        .sub-btn.active { opacity: 1; transform: translateY(-3px); box-shadow: 0 8px 15px rgba(0,0,0,0.2); }
+        .sub-btn.active { 
+            opacity: 1; transform: translateY(-3px); 
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
+            border-color: white;
+        }
         
         .btn-math { background: var(--math); }
         .btn-rla { background: var(--rla); }
         .btn-sci { background: var(--sci); }
         .btn-ss { background: var(--ss); }
 
-        /* Lesson Checklist */
         .container { max-width: 600px; margin: 0 auto; padding: 0 15px; }
         .content { display: none; }
-        .content.active { display: block; animation: fadeIn 0.4s ease; }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+        .content.active { display: block; }
 
         .lesson-card { 
-            background: white; margin-bottom: 12px; padding: 20px; 
-            border-radius: 18px; display: flex; align-items: center; gap: 15px; 
-            box-shadow: 0 2px 8px rgba(0,0,0,0.04); cursor: pointer;
-            transition: 0.2s;
-            border-left: 5px solid transparent;
+            background: var(--card); margin-bottom: 12px; padding: 16px; 
+            border-radius: 12px; display: flex; align-items: center; justify-content: space-between;
+            border-left: 5px solid transparent; transition: 0.3s;
         }
-        
-        /* Dynamic card accent when active */
-        .lesson-card.active-math { border-left-color: var(--math); }
-        .lesson-card.active-rla { border-left-color: var(--rla); }
-        .lesson-card.active-sci { border-left-color: var(--sci); }
-        .lesson-card.active-ss { border-left-color: var(--ss); }
+        .math-border { border-left-color: var(--math); }
+        .rla-border { border-left-color: var(--rla); }
+        .sci-border { border-left-color: var(--sci); }
+        .ss-border { border-left-color: var(--ss); }
 
-        .lesson-card input { width: 24px; height: 24px; pointer-events: none; }
-        .lesson-card span { font-weight: 600; color: #333; font-size: 1rem; line-height: 1.3; }
+        .lesson-info { display: flex; align-items: center; gap: 15px; flex-grow: 1; cursor: pointer; }
+        .lesson-card input { 
+            width: 22px; height: 22px; accent-color: #2ecc71; cursor: pointer;
+        }
+        .lesson-card span { font-weight: 500; color: #efefef; font-size: 1rem; }
+        
+        .learn-link {
+            background: #333; border: none; padding: 10px; border-radius: 50%;
+            font-size: 1.2rem; cursor: pointer; transition: 0.2s;
+            display: flex; align-items: center; justify-content: center; width: 45px; height: 45px;
+        }
+        .learn-link:active { transform: scale(0.9); background: #444; }
     </style>
 </head>
 <body>
 
-<div id="header-top" class="status-header">
-    <h2 id="display-title" style="margin:0 0 5px 0; color: #333;">Benny's Progress</h2>
+<div class="status-header">
+    <h2 style="margin:0 0 5px 0; text-transform: uppercase; letter-spacing: 2px;">Benny's Center Stage</h2>
     <div class="progress-outer"><div id="p-bar" class="bar"></div></div>
-    <div id="stat-text">0% Complete</div>
+    <div id="stat-text">0% Mastered</div>
 </div>
 
 <div class="button-grid">
-    <button id="btn-math" class="sub-btn btn-math active" onclick="switchSubject('math')">MATH</button>
-    <button id="btn-rla" class="sub-btn btn-rla" onclick="switchSubject('rla')">RLA</button>
-    <button id="btn-sci" class="sub-btn btn-sci" onclick="switchSubject('sci')">SCIENCE</button>
-    <button id="btn-ss" class="sub-btn btn-ss" onclick="switchSubject('ss')">SOCIAL S.</button>
+    <button id="btn-math" class="sub-btn btn-math active" onclick="switchSubject('math')">Technique (Math)</button>
+    <button id="btn-rla" class="sub-btn btn-rla" onclick="switchSubject('rla')">Lyrics (RLA)</button>
+    <button id="btn-sci" class="sub-btn btn-sci" onclick="switchSubject('sci')">Energy (Sci)</button>
+    <button id="btn-ss" class="sub-btn btn-ss" onclick="switchSubject('ss')">History (SS)</button>
 </div>
 
 <div class="container">
@@ -109,60 +104,30 @@
 
 <script>
     const dataSet = {
-        math: [
-            "Lesson 1: Whole Numbers", "Lesson 2: Fractions: Adding & Subtracting", "Lesson 3: Decimals", 
-            "Lesson 4: Multiplication", "Lesson 5: Division", "Lesson 6: Factors and Multiples", 
-            "Lesson 7: Using Denominators and Converting Fractions", "Lesson 8: Like and Unlike Terms", 
-            "Lesson 9: Order of Operations", "Lesson 10: Factoring and Solving Equations", "Lesson 11: Absolute Value", 
-            "Lesson 12: Multiplying and Dividing Fractions", "Lesson 13: Exponents", "Lesson 14: Exponent Rules", 
-            "Lesson 15: Squares & Square Roots", "Lesson 16: Cubes, Cube Roots, and Volume", "Lesson 17: Functions and Slopes", 
-            "Lesson 18: Rates and Unit Rates", "Lesson 19: Proportions and Ratios", "Lesson 20: Review Multi–step Word Problems and Inequalities", 
-            "Lesson 21: Math Test Prep", "Lesson 22: Congratulations"
-        ],
-        rla: [
-            "Lesson 1: Vocabulary Questions", "Lesson 2: Analyzing Text", "Lesson 3: Identifying Themes & Main Ideas", 
-            "Lesson 4: Parts Of The Text", "Lesson 5: Expressing/Influencing Opinions", "Lesson 6: Sequence/Cause & Effect", 
-            "Lesson 7: Evidence and Explanation", "Lesson 8: Verb Tenses", "Lesson 9: Run-ons & Fragments", 
-            "Lesson 10: Capitalization", "Lesson 11: Punctuation", "Lesson 12: Getting Ready to Write", 
-            "Lesson 13: Writing the Parts of an Essay", "Lesson 14: Transition Words", 
-            "Lesson 15: Points of View", "Lesson 16: Final Practice Quiz", "Lesson 17: Congratulations!"
-        ],
-        sci: [
-            "Lesson 1: Scientific Method", "Lesson 2: Using Data", "Lesson 3: Using Statistics", 
-            "Lesson 4: Understanding Cells", "Lesson 5: Human Biology", "Lesson 6: DNA & Heredity", 
-            "Lesson 7: Evolution", "Lesson 8: Ecology", "Lesson 9: Ecosystems", "Lesson 10: Geology", 
-            "Lesson 11: Earth’s Atmosphere", "Lesson 12: Earth in Solar System", "Lesson 13: Atoms & Molecules", 
-            "Lesson 14: Changes & Reactions", "Lesson 15: Symbols & Equations", "Lesson 16: Motion & Forces", 
-            "Lesson 17: Energy & Work", "Lesson 18: Units & Formulas", "Lesson 19: Final Science Practice", 
-            "Lesson 20: Congratulations"
-        ],
-        ss: [
-            "Lesson 1: Reading Charts & Graphs", "Lesson 2: Early American History", "Lesson 3: American Revolution", 
-            "Lesson 4: Civil War", "Lesson 5: Progressive Era & WW1", "Lesson 6: Great Depression & WW2", 
-            "Lesson 7: Civil Rights Movement", "Lesson 8: Cold War & Modern World", "Lesson 9: Ancient Civilizations", 
-            "Lesson 10: Human Migration", "Lesson 11: National Borders", "Lesson 12: People & Environment", 
-            "Lesson 13: US Government", "Lesson 14: Citizenship", "Lesson 15: Types of Government", 
-            "Lesson 16: Political Parties", "Lesson 17: Economic Revolutions", "Lesson 18: Taxes", 
-            "Lesson 19: Final Test Prep", "Lesson 20: Congratulations"
-        ]
+        math: ["Whole Numbers", "Fractions", "Decimals", "Multiplication", "Division", "Order of Operations", "Equations", "Exponents", "Square Roots", "Slopes", "Ratios", "Word Problems"],
+        rla: ["Vocabulary", "Analyzing Text", "Themes", "Cause & Effect", "Evidence", "Verb Tenses", "Punctuation", "Essays"],
+        sci: ["Scientific Method", "Cells", "Human Biology", "DNA", "Evolution", "Ecology", "Geology", "Atmosphere", "Solar System", "Chemical Reactions", "Motion & Forces"],
+        ss: ["Early Am. History", "Civil War", "WW1 & WW2", "Civil Rights", "US Government", "Political Parties", "Taxes"]
     };
 
     let activeSub = 'math';
-    const colors = { math: '#4a90e2', rla: '#ff5e62', sci: '#27ae60', ss: '#f39c12' };
 
     function init() {
         Object.keys(dataSet).forEach(sub => {
             const list = document.getElementById(sub + '-list');
-            const saved = JSON.parse(localStorage.getItem('benny_btn_' + sub)) || {};
+            const saved = JSON.parse(localStorage.getItem('benny_dance_' + sub)) || {};
             
             dataSet[sub].forEach((text, i) => {
-                const id = `benny_${sub}_${i}`;
+                const id = `b_dance_${sub}_${i}`;
                 const card = document.createElement('div');
-                card.className = `lesson-card active-${sub}`;
-                card.onclick = () => toggle(id);
+                card.className = `lesson-card ${sub}-border`;
+                
                 card.innerHTML = `
-                    <input type="checkbox" id="${id}" ${saved[id] ? 'checked' : ''}>
-                    <span>${text}</span>
+                    <div class="lesson-info" onclick="toggle('${id}')">
+                        <input type="checkbox" id="${id}" ${saved[id] ? 'checked' : ''}>
+                        <span>Routine ${i+1}: ${text}</span>
+                    </div>
+                    <button class="learn-link" onclick="copyAndOpen('GED ${sub.toUpperCase()} ${text}')">✨</button>
                 `;
                 list.appendChild(card);
             });
@@ -170,24 +135,22 @@
         updateUI();
     }
 
+    function copyAndOpen(phrase) {
+        const el = document.createElement('textarea');
+        el.value = phrase;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        window.open("https://learning.google.com/experiments/learn-about", "_blank");
+    }
+
     function switchSubject(sub) {
         activeSub = sub;
-        
-        // Switch content
         document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
         document.getElementById(sub + '-list').classList.add('active');
-        
-        // Style buttons
         document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('active'));
         document.getElementById('btn-' + sub).classList.add('active');
-        
-        // Color Shift Header and Progress Bar
-        const header = document.getElementById('header-top');
-        const progressBar = document.getElementById('p-bar');
-        
-        header.style.borderTopColor = colors[sub];
-        progressBar.style.backgroundColor = colors[sub];
-        
         updateUI();
     }
 
@@ -202,7 +165,7 @@
         document.querySelectorAll(`#${activeSub}-list input`).forEach(cb => {
             data[cb.id] = cb.checked;
         });
-        localStorage.setItem('benny_btn_' + activeSub, JSON.stringify(data));
+        localStorage.setItem('benny_dance_' + activeSub, JSON.stringify(data));
         updateUI();
     }
 
@@ -211,14 +174,11 @@
         const total = currentList.querySelectorAll('input').length;
         const checked = currentList.querySelectorAll('input:checked').length;
         const pct = Math.round((checked / total) * 100) || 0;
-        
         document.getElementById('p-bar').style.width = pct + '%';
-        const displayNames = {math:'Math', rla:'RLA', sci:'Science', ss:'Social Studies'};
-        document.getElementById('stat-text').innerText = `${displayNames[activeSub]}: ${checked}/${total} Lessons (${pct}%)`;
+        document.getElementById('stat-text').innerText = `${activeSub.toUpperCase()} REPERTOIRE: ${checked}/${total} mastered (${pct}%)`;
     }
 
     init();
 </script>
-
 </body>
 </html>
