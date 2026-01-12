@@ -3,116 +3,130 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#667eea">
-    <title>Benny's GED Sprint Hub</title>
+    <title>Benny's GED Hub</title>
     <style>
-        /* Keeping your excellent styling, adding minor mobile polish */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 10px; color: #333; min-height: 100vh; }
-        .container { max-width: 1400px; margin: 0 auto; }
-        .header { background: white; padding: 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
-        .header h1 { color: #667eea; margin-bottom: 5px; font-size: 1.5rem; }
-        .sync-badge { display: inline-block; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; margin-top: 10px; font-weight: 600; background: #e74c3c; color: white; }
-        .sync-badge.online { background: #27ae60; }
-        .tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-        .tab-btn { background: white; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; color: #666; border: none; font-size: 0.95rem; transition: all 0.2s; flex: 1; min-width: 120px; }
-        .tab-btn.active { background: #333; color: white; }
-        .content { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: none; }
+        :root { --primary: #667eea; --secondary: #764ba2; --success: #27ae60; --bg: #f4f7f6; }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, sans-serif; }
+        body { background: var(--bg); color: #333; padding-bottom: 50px; }
+        
+        /* Top Hero Section */
+        .hero { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; padding: 30px 20px; text-align: center; border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .progress-container { margin-top: 20px; background: rgba(255,255,255,0.2); border-radius: 20px; height: 12px; overflow: hidden; }
+        #progress-bar { background: var(--success); width: 12.5%; height: 100%; transition: width 0.5s; }
+        
+        /* Sync Badge */
+        .sync-badge { font-size: 0.7rem; margin-top: 10px; display: inline-block; padding: 5px 12px; border-radius: 15px; background: rgba(0,0,0,0.3); }
+        .online { color: #2ecc71; }
+
+        /* Modern Tabs */
+        .tabs { display: flex; justify-content: space-around; background: white; margin: -25px 20px 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 5px; }
+        .tab-btn { padding: 12px; border: none; background: none; font-weight: 700; color: #999; flex: 1; cursor: pointer; }
+        .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
+
+        /* Lesson Cards */
+        .content { display: none; padding: 0 20px; }
         .content.active { display: block; }
-        .section { background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #667eea; }
-        .section h3 { color: #667eea; margin-bottom: 10px; font-size: 1.1rem; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th { text-align: left; padding: 10px; background: #667eea; color: white; font-size: 0.8rem; }
-        td { padding: 10px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
-        .status-pill { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; background: #ddd; }
-        .current { background: #f1c40f; color: #000; }
-        input[type="checkbox"] { width: 22px; height: 22px; accent-color: #27ae60; }
+        .card { background: white; padding: 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+        .lesson-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; }
+        .lesson-row:last-child { border: none; }
+        .lesson-info h4 { font-size: 0.95rem; }
+        .lesson-info p { font-size: 0.75rem; color: #888; }
+        
+        /* Checkbox Styling */
+        input[type="checkbox"] { width: 24px; height: 24px; accent-color: var(--success); }
+        
+        .current-tag { background: #f1c40f; color: black; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; margin-left: 8px; vertical-align: middle; }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="header">
-            <h1>📐 Benny's GED Sprint Hub</h1>
-            <p>Target: 145 Score | Subject: Mathematics</p>
-            <div class="sync-badge" id="syncBadge">Connecting...</div>
+
+    <div class="hero">
+        <h1>Sprint to 145</h1>
+        <p>GED Math Tracker</p>
+        <div class="progress-container"><div id="progress-bar"></div></div>
+        <p style="font-size: 0.8rem; margin-top: 8px;"><span id="done-count">3</span>/24 Lessons Complete</p>
+        <div class="sync-badge" id="syncBadge">● Checking Cloud Sync...</div>
+    </div>
+
+    <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab('math', this)">MATH</button>
+        <button class="tab-btn" onclick="switchTab('plan', this)">PLAN</button>
+        <button class="tab-btn" onclick="switchTab('settings', this)">SYNC</button>
+    </div>
+
+    <div id="math" class="content active">
+        <div class="card">
+            <h3 style="color:var(--primary); margin-bottom:10px;">Module 1: Foundations</h3>
+            <div class="lesson-row">
+                <div class="lesson-info"><h4>1. Place Value</h4><p>Rounding & Whole Numbers</p></div>
+                <input type="checkbox" id="m1" class="ged-check">
+            </div>
+            <div class="lesson-row">
+                <div class="lesson-info"><h4>2. Fractions Basics</h4><p>Adding & Subtracting</p></div>
+                <input type="checkbox" id="m2" class="ged-check">
+            </div>
+            <div class="lesson-row">
+                <div class="lesson-info"><h4>3. Decimals <span class="current-tag">CURRENT</span></h4><p>Conversions & Money</p></div>
+                <input type="checkbox" id="m3" class="ged-check">
+            </div>
+            <div class="lesson-row">
+                <div class="lesson-info"><h4>4. Percents</h4><p>Ratios & Proportions</p></div>
+                <input type="checkbox" id="m4" class="ged-check">
+            </div>
         </div>
         
-        <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('math', this)">📐 Math Map</button>
-            <button class="tab-btn" onclick="switchTab('schedule', this)">📅 Weekly</button>
-            <button class="tab-btn" onclick="switchTab('manage', this)">⚙️ Settings</button>
+        <div class="card">
+            <h3 style="color:var(--primary); margin-bottom:10px;">Module 2: Geometry</h3>
+            <div class="lesson-row">
+                <div class="lesson-info"><h4>5. Area & Perimeter</h4><p>GED Formula Sheet Move</p></div>
+                <input type="checkbox" id="m5" class="ged-check">
+            </div>
         </div>
+    </div>
 
-        <div id="math" class="content active">
-            <h2>USAHello Math Syllabus</h2>
-            <div class="section">
-                <h3>Module 1: Basic Math Foundations</h3>
-                <table>
-                    <tr><th>Lesson</th><th>Topic</th><th>Done</th></tr>
-                    <tr><td>1</td><td>Place Value & Rounding</td><td><input type="checkbox" id="m-l1"></td></tr>
-                    <tr><td>2</td><td>Fractions (Add/Sub)</td><td><input type="checkbox" id="m-l2"></td></tr>
-                    <tr><td>3</td><td>Decimals <span class="status-pill current">CURRENT</span></td><td><input type="checkbox" id="m-l3"></td></tr>
-                    <tr><td>4</td><td>Multi/Div Fractions</td><td><input type="checkbox" id="m-l4"></td></tr>
-                    <tr><td>5</td><td>Percents & Ratios</td><td><input type="checkbox" id="m-l5"></td></tr>
-                    <tr><td>6</td><td>Exponents & Roots</td><td><input type="checkbox" id="m-l6"></td></tr>
-                    <tr><td>7</td><td>Order of Operations</td><td><input type="checkbox" id="m-l7"></td></tr>
-                </table>
-            </div>
-
-            <div class="section">
-                <h3>Module 2: Geometry</h3>
-                <table>
-                    <tr><td>8</td><td>Perimeter & Area</td><td><input type="checkbox" id="m-l8"></td></tr>
-                    <tr><td>9</td><td>Circles & Pi</td><td><input type="checkbox" id="m-l9"></td></tr>
-                    <tr><td>10</td><td>Pythagorean Theorem</td><td><input type="checkbox" id="m-l10"></td></tr>
-                    <tr><td>11</td><td>Volume</td><td><input type="checkbox" id="m-l11"></td></tr>
-                    <tr><td>12</td><td>Surface Area</td><td><input type="checkbox" id="m-l12"></td></tr>
-                </table>
-            </div>
-            </div>
-
-        <div id="schedule" class="content">
-            <h2>Weekly Progress</h2>
-            <div class="section">
-                <table>
-                    <tr><th>Activity</th><th>M</th><th>T</th><th>W</th><th>Th</th><th>F</th></tr>
-                    <tr><td>Morning Math</td><td><input type="checkbox" id="mo-m"></td><td><input type="checkbox" id="mo-t"></td><td><input type="checkbox" id="mo-w"></td><td><input type="checkbox" id="mo-th"></td><td><input type="checkbox" id="mo-f"></td></tr>
-                    <tr><td>Afternoon RLA</td><td><input type="checkbox" id="af-m"></td><td><input type="checkbox" id="af-t"></td><td><input type="checkbox" id="af-w"></td><td><input type="checkbox" id="af-th"></td><td><input type="checkbox" id="af-f"></td></tr>
-                </table>
-            </div>
-            <button class="btn btn-danger" onclick="doReset()" style="background:#e74c3c; color:white; padding:10px; border:none; border-radius:5px; width:100%;">Clear Weekly Board</button>
+    <div id="plan" class="content">
+        <div class="card">
+            <h3>Daily Routine</h3>
+            <p style="font-size: 0.9rem; color: #666;">9:30 AM — Start Morning Math</p>
+            <hr style="margin: 10px 0; opacity: 0.2;">
+            <p style="font-size: 0.9rem; color: #666;">12:10 PM — RLA & Typing Club</p>
         </div>
+    </div>
 
-        <div id="manage" class="content">
-            <h2>Cloud Settings</h2>
-            <div class="section">
-                <p>Firebase Status: <span id="dbLink">Configured</span></p>
-                <p style="font-size: 0.8rem; color: #666; margin-top: 10px;">This dashboard syncs every 3 seconds to the Firebase Realtime Database.</p>
-            </div>
+    <div id="settings" class="content">
+        <div class="card">
+            <h3>Cloud Settings</h3>
+            <p style="font-size: 0.8rem;">Database: schooling-dashboard-default-rtdb</p>
+            <button onclick="location.reload()" style="margin-top:15px; padding:10px; width:100%; border-radius:10px; border:1px solid #ddd; background:white;">Force Sync Refresh</button>
         </div>
     </div>
 
     <script>
         const FIREBASE_URL = 'https://schooling-dashboard-default-rtdb.firebaseio.com';
 
-        function switchTab(tabName, btn) {
+        function switchTab(tabId, btn) {
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabName).classList.add('active');
+            document.getElementById(tabId).classList.add('active');
             btn.classList.add('active');
+        }
+
+        function updateProgressBar() {
+            const total = document.querySelectorAll('.ged-check').length;
+            const checked = document.querySelectorAll('.ged-check:checked').length;
+            const pct = (checked / total) * 100;
+            document.getElementById('progress-bar').style.width = pct + "%";
+            document.getElementById('done-count').textContent = checked;
         }
 
         function saveCheckboxes() {
             const data = {};
-            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-                data[cb.id] = cb.checked;
-            });
+            document.querySelectorAll('.ged-check').forEach(cb => data[cb.id] = cb.checked);
             fetch(FIREBASE_URL + '/checks.json', {
                 method: 'PUT',
-                body: JSON.stringify(data),
-                headers: { 'Content-Type': 'application/json' }
-            }).catch(e => console.error('Sync Error:', e));
+                body: JSON.stringify(data)
+            });
+            updateProgressBar();
         }
 
         function loadCheckboxes() {
@@ -124,32 +138,17 @@
                             const el = document.getElementById(id);
                             if (el) el.checked = checked;
                         });
-                        document.getElementById('syncBadge').textContent = '☁️ Cloud Synced';
-                        document.getElementById('syncBadge').classList.add('online');
+                        updateProgressBar();
+                        document.getElementById('syncBadge').innerHTML = "● <span class='online'>Live Cloud Sync Active</span>";
                     }
-                })
-                .catch(() => {
-                    document.getElementById('syncBadge').textContent = '⚠️ Offline';
-                    document.getElementById('syncBadge').classList.remove('online');
                 });
         }
 
-        function doReset() {
-            if(confirm("Reset all weekly progress?")) {
-                document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-                saveCheckboxes();
-            }
-        }
-
-        // Auto-sync every 3 seconds
         setInterval(loadCheckboxes, 3000);
-
-        window.addEventListener('load', () => {
+        window.onload = () => {
             loadCheckboxes();
-            document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
-                cb.addEventListener('change', saveCheckboxes);
-            });
-        });
+            document.querySelectorAll('.ged-check').forEach(cb => cb.addEventListener('change', saveCheckboxes));
+        };
     </script>
 </body>
 </html>
