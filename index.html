@@ -3,151 +3,141 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Benny's GED Hub</title>
+    <title>Benny's GED Sprint</title>
     <style>
         :root { --primary: #667eea; --secondary: #764ba2; --success: #27ae60; --bg: #f4f7f6; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, sans-serif; }
-        body { background: var(--bg); color: #333; padding-bottom: 50px; }
+        body { background: var(--bg); color: #333; padding-bottom: 80px; }
         
-        /* Top Hero Section */
-        .hero { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; padding: 30px 20px; text-align: center; border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
-        .progress-container { margin-top: 20px; background: rgba(255,255,255,0.2); border-radius: 20px; height: 12px; overflow: hidden; }
-        #progress-bar { background: var(--success); width: 12.5%; height: 100%; transition: width 0.5s; }
+        /* Layout Container */
+        .container { max-width: 1000px; margin: 0 auto; }
+
+        .hero { background: linear-gradient(135deg, var(--primary) 0%, var(--secondary) 100%); color: white; padding: 40px 20px; text-align: center; border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); }
+        .progress-container { margin: 20px auto 0; background: rgba(255,255,255,0.2); border-radius: 20px; height: 14px; overflow: hidden; max-width: 600px; }
+        #progress-bar { background: var(--success); width: 0%; height: 100%; transition: width 0.5s; }
         
-        /* Sync Badge */
-        .sync-badge { font-size: 0.7rem; margin-top: 10px; display: inline-block; padding: 5px 12px; border-radius: 15px; background: rgba(0,0,0,0.3); }
-        .online { color: #2ecc71; }
+        .tabs { display: flex; justify-content: center; background: white; margin: -25px 20px 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 5px; max-width: 600px; margin-left: auto; margin-right: auto; }
+        .tab-btn { padding: 12px 25px; border: none; background: none; font-weight: 700; color: #999; cursor: pointer; border-radius: 10px; transition: 0.3s; }
+        .tab-btn.active { color: var(--primary); background: #f0f3ff; }
 
-        /* Modern Tabs */
-        .tabs { display: flex; justify-content: space-around; background: white; margin: -25px 20px 20px; border-radius: 15px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); padding: 5px; }
-        .tab-btn { padding: 12px; border: none; background: none; font-weight: 700; color: #999; flex: 1; cursor: pointer; }
-        .tab-btn.active { color: var(--primary); border-bottom: 3px solid var(--primary); }
+        /* Responsive Grid Logic */
+        .module-grid { 
+            display: grid; 
+            grid-template-columns: 1fr; /* Mobile: 1 column */
+            gap: 20px; 
+            padding: 0 20px;
+        }
 
-        /* Lesson Cards */
-        .content { display: none; padding: 0 20px; }
-        .content.active { display: block; }
-        .card { background: white; padding: 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
-        .lesson-row { display: flex; align-items: center; justify-content: space-between; padding: 12px 0; border-bottom: 1px solid #eee; }
+        @media (min-width: 768px) {
+            .module-grid { grid-template-columns: 1fr 1fr; } /* Web: 2 columns */
+        }
+
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); height: fit-content; }
+        .module-title { color: var(--primary); font-size: 1.1rem; margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; display: flex; justify-content: space-between; }
+        
+        .lesson-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f9f9f9; }
         .lesson-row:last-child { border: none; }
-        .lesson-info h4 { font-size: 0.95rem; }
+        .lesson-info h4 { font-size: 0.9rem; margin-bottom: 2px; }
         .lesson-info p { font-size: 0.75rem; color: #888; }
         
-        /* Checkbox Styling */
-        input[type="checkbox"] { width: 24px; height: 24px; accent-color: var(--success); }
-        
-        .current-tag { background: #f1c40f; color: black; font-size: 0.6rem; padding: 2px 6px; border-radius: 4px; margin-left: 8px; vertical-align: middle; }
+        input[type="checkbox"] { width: 22px; height: 22px; cursor: pointer; accent-color: var(--success); }
+        .current-tag { background: #f1c40f; color: black; font-size: 0.65rem; padding: 2px 6px; border-radius: 4px; font-weight: bold; }
+        .sync-badge { font-size: 0.7rem; margin-top: 10px; display: inline-block; padding: 5px 12px; border-radius: 15px; background: rgba(0,0,0,0.3); }
+        .online { color: #2ecc71; }
     </style>
 </head>
 <body>
 
     <div class="hero">
-        <h1>Sprint to 145</h1>
-        <p>GED Math Tracker</p>
-        <div class="progress-container"><div id="progress-bar"></div></div>
-        <p style="font-size: 0.8rem; margin-top: 8px;"><span id="done-count">3</span>/24 Lessons Complete</p>
-        <div class="sync-badge" id="syncBadge">● Checking Cloud Sync...</div>
-    </div>
-
-    <div class="tabs">
-        <button class="tab-btn active" onclick="switchTab('math', this)">MATH</button>
-        <button class="tab-btn" onclick="switchTab('plan', this)">PLAN</button>
-        <button class="tab-btn" onclick="switchTab('settings', this)">SYNC</button>
-    </div>
-
-    <div id="math" class="content active">
-        <div class="card">
-            <h3 style="color:var(--primary); margin-bottom:10px;">Module 1: Foundations</h3>
-            <div class="lesson-row">
-                <div class="lesson-info"><h4>1. Place Value</h4><p>Rounding & Whole Numbers</p></div>
-                <input type="checkbox" id="m1" class="ged-check">
-            </div>
-            <div class="lesson-row">
-                <div class="lesson-info"><h4>2. Fractions Basics</h4><p>Adding & Subtracting</p></div>
-                <input type="checkbox" id="m2" class="ged-check">
-            </div>
-            <div class="lesson-row">
-                <div class="lesson-info"><h4>3. Decimals <span class="current-tag">CURRENT</span></h4><p>Conversions & Money</p></div>
-                <input type="checkbox" id="m3" class="ged-check">
-            </div>
-            <div class="lesson-row">
-                <div class="lesson-info"><h4>4. Percents</h4><p>Ratios & Proportions</p></div>
-                <input type="checkbox" id="m4" class="ged-check">
-            </div>
-        </div>
-        
-        <div class="card">
-            <h3 style="color:var(--primary); margin-bottom:10px;">Module 2: Geometry</h3>
-            <div class="lesson-row">
-                <div class="lesson-info"><h4>5. Area & Perimeter</h4><p>GED Formula Sheet Move</p></div>
-                <input type="checkbox" id="m5" class="ged-check">
-            </div>
+        <div class="container">
+            <h1>Benny's GED Sprint</h1>
+            <p>Mathematics Dashboard</p>
+            <div class="progress-container"><div id="progress-bar"></div></div>
+            <p style="font-size: 0.9rem; margin-top: 10px; font-weight: 500;"><span id="done-count">0</span> / 24 Lessons Mastered</p>
+            <div class="sync-badge" id="syncBadge">● Connecting...</div>
         </div>
     </div>
 
-    <div id="plan" class="content">
-        <div class="card">
-            <h3>Daily Routine</h3>
-            <p style="font-size: 0.9rem; color: #666;">9:30 AM — Start Morning Math</p>
-            <hr style="margin: 10px 0; opacity: 0.2;">
-            <p style="font-size: 0.9rem; color: #666;">12:10 PM — RLA & Typing Club</p>
+    <div class="container">
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('math', this)">SYLLABUS</button>
+            <button class="tab-btn" onclick="switchTab('plan', this)">SCHEDULE</button>
         </div>
-    </div>
 
-    <div id="settings" class="content">
-        <div class="card">
-            <h3>Cloud Settings</h3>
-            <p style="font-size: 0.8rem;">Database: schooling-dashboard-default-rtdb</p>
-            <button onclick="location.reload()" style="margin-top:15px; padding:10px; width:100%; border-radius:10px; border:1px solid #ddd; background:white;">Force Sync Refresh</button>
+        <div id="math" class="content active">
+            <div class="module-grid">
+                <div class="card">
+                    <h3 class="module-title">1. Foundations</h3>
+                    <div class="lesson-row"><div class="lesson-info"><h4>1. Place Value</h4><p>Rounding & Numbers</p></div><input type="checkbox" id="l1" class="ged-check"></div>
+                    <div class="lesson-row"><div class="lesson-info"><h4>2. Fractions +/-</h4><p>Basic Operations</p></div><input type="checkbox" id="l2" class="ged-check"></div>
+                    <div class="lesson-row"><div class="lesson-info"><h4>3. Decimals <span class="current-tag">ACTIVE</span></h4><p>Money & Conversions</p></div><input type="checkbox" id="l3" class="ged-check"></div>
+                    <div class="lesson-row"><div class="lesson-info"><h4>4. Fractions x/÷</h4><p>Advanced Operations</p></div><input type="checkbox" id="l4" class="ged-check"></div>
+                    <div class="lesson-row"><div class="lesson-info"><h4>5. Percents/Ratios</h4><p>Proportions & Interest</p></div><input type="checkbox" id="l5" class="ged-check"></div>
+                </div>
+
+                <div class="card">
+                    <h3 class="module-title">2. Geometry</h3>
+                    <div class="lesson-row"><div class="lesson-info"><h4>8. Perimeter/Area</h4><p>2D Plane Shapes</p></div><input type="checkbox" id="l8" class="ged-check"></div>
+                    <div class="lesson-row"><div class="lesson-info"><h4>9. Circles</h4><p>Pi & Formulas</p></div><input type="checkbox" id="l9" class="ged-check"></div>
+                    <div class="lesson-row"><div class="lesson-info"><h4>10. Pythagorean</h4><p>Right Triangles</p></div><input type="checkbox" id="l10" class="ged-check"></div>
+                    <div class="lesson-row"><div class="lesson-info"><h4>11. Volume</h4><p>3D Space Measurement</p></div><input type="checkbox" id="l11" class="ged-check"></div>
+                </div>
+
+                <div class="card">
+                    <h3 class="module-title">3. Algebra</h3>
+                    <div class="lesson-row"><div class="lesson-info"><h4>14. Variables</h4><p>Expressions</p></div><input type="checkbox" id="l14" class="ged-check"></div>
+                    <div class="lesson-row"><div class="lesson-info"><h4>15. Equations</h4><p>Isolating X</p></div><input type="checkbox" id="l15" class="ged-check"></div>
+                    <div class="lesson-row"><div class="lesson-info"><h4>17. Inequalities</h4><p>Number Line Graphs</p></div><input type="checkbox" id="l17" class="ged-check"></div>
+                </div>
+
+                <div class="card">
+                    <h3 class="module-title">4. Graphs</h3>
+                    <div class="lesson-row"><div class="lesson-info"><h4>20. Coord. Plane</h4><p>X/Y Plotting</p></div><input type="checkbox" id="l20" class="ged-check"></div>
+                    <div class="lesson-row"><div class="lesson-info"><h4>21. Slope</h4><p>Linear Logic</p></div><input type="checkbox" id="l21" class="ged-check"></div>
+                    <div class="lesson-row"><div class="lesson-info"><h4>24. Probability</h4><p>Data & Stats</p></div><input type="checkbox" id="l24" class="ged-check"></div>
+                </div>
+            </div>
+        </div>
+
+        <div id="plan" class="content" style="display:none; padding: 20px;">
+            <div class="card">
+                <h3>Daily Schedule</h3>
+                <p style="margin-top:10px;">9:30 AM - Math Focus</p>
+                <p>12:10 PM - RLA & Reading</p>
+            </div>
         </div>
     </div>
 
     <script>
         const FIREBASE_URL = 'https://schooling-dashboard-default-rtdb.firebaseio.com';
-
-        function switchTab(tabId, btn) {
-            document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.getElementById(tabId).classList.add('active');
-            btn.classList.add('active');
+        function switchTab(id, b) {
+            document.querySelectorAll('.content').forEach(c => c.style.display = 'none');
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+            document.getElementById(id).style.display = 'block'; b.classList.add('active');
         }
-
-        function updateProgressBar() {
-            const total = document.querySelectorAll('.ged-check').length;
+        function updateUI() {
+            const all = document.querySelectorAll('.ged-check').length;
             const checked = document.querySelectorAll('.ged-check:checked').length;
-            const pct = (checked / total) * 100;
-            document.getElementById('progress-bar').style.width = pct + "%";
+            document.getElementById('progress-bar').style.width = (checked/all*100) + "%";
             document.getElementById('done-count').textContent = checked;
         }
-
-        function saveCheckboxes() {
-            const data = {};
-            document.querySelectorAll('.ged-check').forEach(cb => data[cb.id] = cb.checked);
-            fetch(FIREBASE_URL + '/checks.json', {
-                method: 'PUT',
-                body: JSON.stringify(data)
-            });
-            updateProgressBar();
+        function save() {
+            const d = {}; document.querySelectorAll('.ged-check').forEach(c => d[c.id] = c.checked);
+            fetch(FIREBASE_URL + '/checks.json', { method: 'PUT', body: JSON.stringify(d) });
+            updateUI();
         }
-
-        function loadCheckboxes() {
-            fetch(FIREBASE_URL + '/checks.json')
-                .then(r => r.json())
-                .then(data => {
-                    if (data) {
-                        Object.entries(data).forEach(([id, checked]) => {
-                            const el = document.getElementById(id);
-                            if (el) el.checked = checked;
-                        });
-                        updateProgressBar();
-                        document.getElementById('syncBadge').innerHTML = "● <span class='online'>Live Cloud Sync Active</span>";
-                    }
+        function load() {
+            fetch(FIREBASE_URL + '/checks.json').then(r => r.json()).then(data => {
+                if (data) Object.entries(data).forEach(([id, val]) => {
+                    const el = document.getElementById(id); if (el) el.checked = val;
                 });
+                updateUI(); document.getElementById('syncBadge').innerHTML = "● <span class='online'>Cloud Synced</span>";
+            });
         }
-
-        setInterval(loadCheckboxes, 3000);
+        setInterval(load, 3000);
         window.onload = () => {
-            loadCheckboxes();
-            document.querySelectorAll('.ged-check').forEach(cb => cb.addEventListener('change', saveCheckboxes));
+            load();
+            document.querySelectorAll('.ged-check').forEach(c => c.addEventListener('change', save));
         };
     </script>
 </body>
