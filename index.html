@@ -6,15 +6,11 @@
     <title>Benny's Performance Tracker</title>
     <style>
         :root { 
-            --math: #ff007a; /* Neon Pink */
-            --rla: #7000ff;  /* Electric Purple */
-            --sci: #00d4ff;  /* Cyan */
-            --ss: #ffcc00;   /* Gold */
-            --bg: #1a1a1a;   /* Dark Studio Floor */
-            --card: #2a2a2a;
+            --math: #ff007a; --rla: #7000ff; --sci: #00d4ff; --ss: #ffcc00; 
+            --bg: #1a1a1a; --card: #2a2a2a;
         }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 40px; }
+        body { font-family: sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 40px; }
         
         .status-header {
             background: #000; padding: 25px 20px; text-align: center;
@@ -27,7 +23,7 @@
         }
         .bar { 
             background: linear-gradient(90deg, var(--math), var(--rla)); 
-            height: 100%; width: 0%; transition: 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275); 
+            height: 100%; width: 0%; transition: 0.5s ease;
         }
         #stat-text { font-weight: bold; color: #aaa; font-size: 0.9rem; letter-spacing: 1px; }
 
@@ -38,19 +34,11 @@
         .sub-btn {
             padding: 15px; border: none; border-radius: 50px; color: white;
             font-weight: 800; font-size: 0.85rem; cursor: pointer; opacity: 0.4;
-            transition: 0.3s; text-transform: uppercase; letter-spacing: 1px;
-            border: 2px solid transparent;
+            transition: 0.3s; text-transform: uppercase; border: 2px solid transparent;
         }
-        .sub-btn.active { 
-            opacity: 1; transform: translateY(-3px); 
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.2);
-            border-color: white;
-        }
-        
-        .btn-math { background: var(--math); }
-        .btn-rla { background: var(--rla); }
-        .btn-sci { background: var(--sci); }
-        .btn-ss { background: var(--ss); }
+        .sub-btn.active { opacity: 1; transform: translateY(-3px); border-color: white; }
+        .btn-math { background: var(--math); } .btn-rla { background: var(--rla); }
+        .btn-sci { background: var(--sci); } .btn-ss { background: var(--ss); }
 
         .container { max-width: 600px; margin: 0 auto; padding: 0 15px; }
         .content { display: none; }
@@ -59,40 +47,36 @@
         .lesson-card { 
             background: var(--card); margin-bottom: 12px; padding: 16px; 
             border-radius: 12px; display: flex; align-items: center; justify-content: space-between;
-            border-left: 5px solid transparent; transition: 0.3s;
         }
-        .math-border { border-left-color: var(--math); }
-        .rla-border { border-left-color: var(--rla); }
-        .sci-border { border-left-color: var(--sci); }
-        .ss-border { border-left-color: var(--ss); }
-
         .lesson-info { display: flex; align-items: center; gap: 15px; flex-grow: 1; cursor: pointer; }
-        .lesson-card input { 
-            width: 22px; height: 22px; accent-color: #2ecc71; cursor: pointer;
-        }
-        .lesson-card span { font-weight: 500; color: #efefef; font-size: 1rem; }
         
+        /* Larger Neon Checkbox */
+        input[type="checkbox"] { 
+            width: 26px; height: 26px; accent-color: #2ecc71; cursor: pointer; 
+            filter: drop-shadow(0 0 5px rgba(46, 204, 113, 0.5));
+        }
+
+        .lesson-card span { font-weight: 500; color: #efefef; font-size: 1rem; }
         .learn-link {
             background: #333; border: none; padding: 10px; border-radius: 50%;
-            font-size: 1.2rem; cursor: pointer; transition: 0.2s;
-            display: flex; align-items: center; justify-content: center; width: 45px; height: 45px;
+            font-size: 1.2rem; cursor: pointer; width: 45px; height: 45px;
+            display: flex; align-items: center; justify-content: center;
         }
-        .learn-link:active { transform: scale(0.9); background: #444; }
     </style>
 </head>
 <body>
 
 <div class="status-header">
-    <h2 style="margin:0 0 5px 0; text-transform: uppercase; letter-spacing: 2px;">Benny's Center Stage</h2>
+    <h2 style="margin:0 0 5px 0; letter-spacing: 2px;">BENNY'S CENTER STAGE</h2>
     <div class="progress-outer"><div id="p-bar" class="bar"></div></div>
     <div id="stat-text">0% Mastered</div>
 </div>
 
 <div class="button-grid">
-    <button id="btn-math" class="sub-btn btn-math active" onclick="switchSubject('math')">Technique (Math)</button>
-    <button id="btn-rla" class="sub-btn btn-rla" onclick="switchSubject('rla')">Lyrics (RLA)</button>
-    <button id="btn-sci" class="sub-btn btn-sci" onclick="switchSubject('sci')">Energy (Sci)</button>
-    <button id="btn-ss" class="sub-btn btn-ss" onclick="switchSubject('ss')">History (SS)</button>
+    <button id="btn-math" class="sub-btn btn-math active" onclick="switchSubject('math')">TECHNIQUE</button>
+    <button id="btn-rla" class="sub-btn btn-rla" onclick="switchSubject('rla')">LYRICS</button>
+    <button id="btn-sci" class="sub-btn btn-sci" onclick="switchSubject('sci')">ENERGY</button>
+    <button id="btn-ss" class="sub-btn btn-ss" onclick="switchSubject('ss')">HISTORY</button>
 </div>
 
 <div class="container">
@@ -120,11 +104,11 @@
             dataSet[sub].forEach((text, i) => {
                 const id = `b_dance_${sub}_${i}`;
                 const card = document.createElement('div');
-                card.className = `lesson-card ${sub}-border`;
+                card.className = `lesson-card`;
                 
                 card.innerHTML = `
                     <div class="lesson-info" onclick="toggle('${id}')">
-                        <input type="checkbox" id="${id}" ${saved[id] ? 'checked' : ''}>
+                        <input type="checkbox" id="${id}" ${saved[id] ? 'checked' : ''} onchange="save()">
                         <span>Routine ${i+1}: ${text}</span>
                     </div>
                     <button class="learn-link" onclick="copyAndOpen('GED ${sub.toUpperCase()} ${text}')">✨</button>
@@ -132,25 +116,6 @@
                 list.appendChild(card);
             });
         });
-        updateUI();
-    }
-
-    function copyAndOpen(phrase) {
-        const el = document.createElement('textarea');
-        el.value = phrase;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
-        window.open("https://learning.google.com/experiments/learn-about", "_blank");
-    }
-
-    function switchSubject(sub) {
-        activeSub = sub;
-        document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
-        document.getElementById(sub + '-list').classList.add('active');
-        document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-' + sub).classList.add('active');
         updateUI();
     }
 
@@ -162,10 +127,20 @@
 
     function save() {
         const data = {};
+        // Find all checkboxes in the current active list
         document.querySelectorAll(`#${activeSub}-list input`).forEach(cb => {
             data[cb.id] = cb.checked;
         });
         localStorage.setItem('benny_dance_' + activeSub, JSON.stringify(data));
+        updateUI();
+    }
+
+    function switchSubject(sub) {
+        activeSub = sub;
+        document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
+        document.getElementById(sub + '-list').classList.add('active');
+        document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('active'));
+        document.getElementById('btn-' + sub).classList.add('active');
         updateUI();
     }
 
@@ -175,7 +150,17 @@
         const checked = currentList.querySelectorAll('input:checked').length;
         const pct = Math.round((checked / total) * 100) || 0;
         document.getElementById('p-bar').style.width = pct + '%';
-        document.getElementById('stat-text').innerText = `${activeSub.toUpperCase()} REPERTOIRE: ${checked}/${total} mastered (${pct}%)`;
+        document.getElementById('stat-text').innerText = `${activeSub.toUpperCase()} MASTERED: ${checked}/${total} (${pct}%)`;
+    }
+
+    function copyAndOpen(phrase) {
+        const el = document.createElement('textarea');
+        el.value = phrase;
+        document.body.appendChild(el);
+        el.select();
+        document.execCommand('copy');
+        document.body.removeChild(el);
+        window.open("https://learning.google.com/experiments/learn-about", "_blank");
     }
 
     init();
