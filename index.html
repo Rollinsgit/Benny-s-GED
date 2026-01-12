@@ -5,357 +5,104 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="theme-color" content="#667eea">
-    <title>Benny's GED Dashboard</title>
+    <title>Benny's GED Sprint Hub</title>
     <style>
+        /* Keeping your excellent styling, adding minor mobile polish */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 10px; color: #333; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 10px; color: #333; min-height: 100vh; }
         .container { max-width: 1400px; margin: 0 auto; }
         .header { background: white; padding: 20px; border-radius: 15px; margin-bottom: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); }
         .header h1 { color: #667eea; margin-bottom: 5px; font-size: 1.5rem; }
-        .header p { font-size: 0.85rem; color: #666; }
         .sync-badge { display: inline-block; padding: 8px 16px; border-radius: 20px; font-size: 0.8rem; margin-top: 10px; font-weight: 600; background: #e74c3c; color: white; }
         .sync-badge.online { background: #27ae60; }
         .tabs { display: flex; gap: 8px; margin-bottom: 15px; flex-wrap: wrap; }
-        .tab-btn { background: white; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; color: #666; border: none; font-size: 0.95rem; transition: all 0.2s; }
-        .tab-btn:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
-        .tab-btn.active { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; }
+        .tab-btn { background: white; padding: 12px 20px; border-radius: 10px; cursor: pointer; font-weight: 600; color: #666; border: none; font-size: 0.95rem; transition: all 0.2s; flex: 1; min-width: 120px; }
+        .tab-btn.active { background: #333; color: white; }
         .content { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.2); display: none; }
         .content.active { display: block; }
-        .content h2 { font-size: 1.3rem; margin-bottom: 15px; color: #667eea; }
         .section { background: #f8f9fa; padding: 15px; border-radius: 10px; margin-bottom: 15px; border-left: 4px solid #667eea; }
         .section h3 { color: #667eea; margin-bottom: 10px; font-size: 1.1rem; }
-        .table-wrapper { overflow-x: auto; -webkit-overflow-scrolling: touch; margin: 15px -20px; }
-        table { width: 100%; border-collapse: collapse; margin: 15px 0; min-width: 600px; }
-        th { background: #667eea; color: white; padding: 12px; text-align: left; font-weight: 600; }
-        td { padding: 12px; border-bottom: 1px solid #ddd; }
-        tr:nth-child(even) { background: #f8f9fa; }
-        input[type="checkbox"] { width: 20px; height: 20px; cursor: pointer; accent-color: #667eea; }
-        .btn { background: #667eea; color: white; padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; font-weight: 600; margin: 10px 10px 10px 0; font-size: 0.95rem; }
-        .btn:hover { background: #764ba2; }
-        .btn-danger { background: #e74c3c; }
-        .btn-danger:hover { background: #c0392b; }
-        input[type="text"], textarea, select { padding: 12px; font-size: 1rem; border-radius: 5px; border: 2px solid #667eea; margin: 10px 0; width: 100%; font-family: inherit; }
-        .modal { display: none; position: fixed; z-index: 1000; left: 0; top: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); align-items: center; justify-content: center; }
-        .modal.show { display: flex; }
-        .modal-content { background: white; padding: 30px; border-radius: 10px; max-width: 400px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
-        .modal-btn { padding: 12px 24px; border: none; border-radius: 8px; cursor: pointer; margin: 10px; font-weight: 600; font-size: 0.95rem; }
-        .modal-btn-confirm { background: #e74c3c; color: white; }
-        .modal-btn-cancel { background: #95a5a6; color: white; }
-        .item-card { background: white; padding: 15px; border-radius: 8px; margin-bottom: 10px; border: 1px solid #e0e0e0; display: flex; justify-content: space-between; align-items: center; }
-        .item-info h4 { color: #667eea; margin-bottom: 5px; }
-        .item-info p { font-size: 0.85rem; color: #999; }
-        .btn-delete { background: #e74c3c; color: white; border: none; padding: 8px 16px; border-radius: 5px; cursor: pointer; font-weight: 600; }
-        .vocab-item { background: white; padding: 12px; border-radius: 8px; margin-bottom: 10px; border-left: 4px solid #667eea; }
-        @media (min-width: 768px) {
-            body { padding: 20px; }
-            .header { padding: 30px; }
-            .content { padding: 30px; }
-        }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th { text-align: left; padding: 10px; background: #667eea; color: white; font-size: 0.8rem; }
+        td { padding: 10px; border-bottom: 1px solid #eee; font-size: 0.9rem; }
+        .status-pill { padding: 4px 8px; border-radius: 4px; font-size: 0.7rem; font-weight: bold; background: #ddd; }
+        .current { background: #f1c40f; color: #000; }
+        input[type="checkbox"] { width: 22px; height: 22px; accent-color: #27ae60; }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <h1>📚 Benny's GED Dashboard</h1>
-            <p>Age 18 | GED Preparation Program</p>
+            <h1>📐 Benny's GED Sprint Hub</h1>
+            <p>Target: 145 Score | Subject: Mathematics</p>
             <div class="sync-badge" id="syncBadge">Connecting...</div>
         </div>
         
         <div class="tabs">
-            <button class="tab-btn active" onclick="switchTab('schedule', this)">📅 Schedule</button>
-            <button class="tab-btn" onclick="switchTab('curriculum', this)">📖 Curriculum</button>
-            <button class="tab-btn" onclick="switchTab('reading', this)">📚 Reading</button>
-            <button class="tab-btn" onclick="switchTab('scouts', this)">⚜️ Scouts</button>
-            <button class="tab-btn" onclick="switchTab('manage', this)">⚙️ Manage</button>
+            <button class="tab-btn active" onclick="switchTab('math', this)">📐 Math Map</button>
+            <button class="tab-btn" onclick="switchTab('schedule', this)">📅 Weekly</button>
+            <button class="tab-btn" onclick="switchTab('manage', this)">⚙️ Settings</button>
         </div>
-        
-        <!-- SCHEDULE TAB -->
-        <div id="schedule" class="content active">
-            <h2>Daily Schedule & Progress</h2>
-            <p style="color: #666; margin-bottom: 15px;"><strong>9:30 AM – 3:45 PM</strong> (6.25 hours including lunch)</p>
-            <button class="btn btn-danger" onclick="openResetModal()">🔄 Reset Week</button>
-            
+
+        <div id="math" class="content active">
+            <h2>USAHello Math Syllabus</h2>
             <div class="section">
-                <h3>Monthly Rotation (Sept 2025 - June 2026)</h3>
-                <div class="table-wrapper">
+                <h3>Module 1: Basic Math Foundations</h3>
                 <table>
-                    <tr><th>Month</th><th>Morning Subject (9:30–11:40 AM)</th><th>Afternoon Subject (12:10–3:00 PM)</th><th>Key Milestones</th></tr>
-                    <tr><td>Nov 2025</td><td>Math (Pre-GED basics)</td><td>Language Arts + Typing Club</td><td>Complete 4–6 math lessons (70% mastery)</td></tr>
-                    <tr><td>Dec 2025</td><td>Math (Decimals/Algebra intro)</td><td>Language Arts + Typing Club</td><td>Full practice test end-month</td></tr>
-                    <tr><td>Jan 2026</td><td>Science (Life/Physical basics)</td><td>Language Arts + Typing Club</td><td>Switch to GED-style quizzes</td></tr>
-                    <tr><td>Feb 2026</td><td>Science (Earth/Space)</td><td>Social Studies + Typing Club</td><td>Monthly practice test</td></tr>
-                    <tr><td>Mar 2026</td><td>Math (GED-level Algebra/Geometry)</td><td>Mixed Review + Typing Club</td><td>Weekly timed practices</td></tr>
-                    <tr><td>Apr 2026</td><td>Math (Advanced problem-solving)</td><td>Mixed Review + Typing Club</td><td>Schedule first GED if ready</td></tr>
-                    <tr><td>May-Jun 2026</td><td>GED Testing/Flex Review</td><td>GED Testing/Flex Review</td><td>Take 1–2 subjects/month</td></tr>
+                    <tr><th>Lesson</th><th>Topic</th><th>Done</th></tr>
+                    <tr><td>1</td><td>Place Value & Rounding</td><td><input type="checkbox" id="m-l1"></td></tr>
+                    <tr><td>2</td><td>Fractions (Add/Sub)</td><td><input type="checkbox" id="m-l2"></td></tr>
+                    <tr><td>3</td><td>Decimals <span class="status-pill current">CURRENT</span></td><td><input type="checkbox" id="m-l3"></td></tr>
+                    <tr><td>4</td><td>Multi/Div Fractions</td><td><input type="checkbox" id="m-l4"></td></tr>
+                    <tr><td>5</td><td>Percents & Ratios</td><td><input type="checkbox" id="m-l5"></td></tr>
+                    <tr><td>6</td><td>Exponents & Roots</td><td><input type="checkbox" id="m-l6"></td></tr>
+                    <tr><td>7</td><td>Order of Operations</td><td><input type="checkbox" id="m-l7"></td></tr>
                 </table>
-                </div>
             </div>
-            
+
             <div class="section">
-                <h3>Weekday Activities</h3>
-                <div class="table-wrapper">
+                <h3>Module 2: Geometry</h3>
                 <table>
-                    <tr><th>Time</th><th>Activity</th><th>Mon</th><th>Tue</th><th>Wed</th><th>Thu</th><th>Fri</th></tr>
-                    <tr><td>9:30–11:40</td><td>Morning Subject (Math/Science/Mixed)</td><td><input type="checkbox" id="morning-mon"></td><td><input type="checkbox" id="morning-tue"></td><td><input type="checkbox" id="morning-wed"></td><td><input type="checkbox" id="morning-thu"></td><td><input type="checkbox" id="morning-fri"></td></tr>
-                    <tr><td>11:40 AM–12:10 PM</td><td>Lunch Break</td><td style="text-align: center;">—</td><td style="text-align: center;">—</td><td style="text-align: center;">—</td><td style="text-align: center;">—</td><td style="text-align: center;">—</td></tr>
-                    <tr><td>12:10–3:00</td><td>Afternoon Subject (Language Arts/Social Studies) + Typing Club</td><td><input type="checkbox" id="afternoon-mon"></td><td><input type="checkbox" id="afternoon-tue"></td><td><input type="checkbox" id="afternoon-wed"></td><td><input type="checkbox" id="afternoon-thu"></td><td><input type="checkbox" id="afternoon-fri"></td></tr>
-                    <tr><td>3:00–3:30</td><td>Reading & Vocabulary</td><td><input type="checkbox" id="reading-mon"></td><td><input type="checkbox" id="reading-tue"></td><td><input type="checkbox" id="reading-wed"></td><td><input type="checkbox" id="reading-thu"></td><td><input type="checkbox" id="reading-fri"></td></tr>
-                    <tr><td>3:30–3:50</td><td>Duolingo (Optional)</td><td><input type="checkbox" id="duolingo-mon"></td><td><input type="checkbox" id="duolingo-tue"></td><td><input type="checkbox" id="duolingo-wed"></td><td><input type="checkbox" id="duolingo-thu"></td><td><input type="checkbox" id="duolingo-fri"></td></tr>
-                    <tr><td>3:50–4:00</td><td>Wrap-Up & Plan Next Day</td><td><input type="checkbox" id="wrapup-mon"></td><td><input type="checkbox" id="wrapup-tue"></td><td><input type="checkbox" id="wrapup-wed"></td><td><input type="checkbox" id="wrapup-thu"></td><td><input type="checkbox" id="wrapup-fri"></td></tr>
+                    <tr><td>8</td><td>Perimeter & Area</td><td><input type="checkbox" id="m-l8"></td></tr>
+                    <tr><td>9</td><td>Circles & Pi</td><td><input type="checkbox" id="m-l9"></td></tr>
+                    <tr><td>10</td><td>Pythagorean Theorem</td><td><input type="checkbox" id="m-l10"></td></tr>
+                    <tr><td>11</td><td>Volume</td><td><input type="checkbox" id="m-l11"></td></tr>
+                    <tr><td>12</td><td>Surface Area</td><td><input type="checkbox" id="m-l12"></td></tr>
                 </table>
-                </div>
             </div>
+            </div>
+
+        <div id="schedule" class="content">
+            <h2>Weekly Progress</h2>
+            <div class="section">
+                <table>
+                    <tr><th>Activity</th><th>M</th><th>T</th><th>W</th><th>Th</th><th>F</th></tr>
+                    <tr><td>Morning Math</td><td><input type="checkbox" id="mo-m"></td><td><input type="checkbox" id="mo-t"></td><td><input type="checkbox" id="mo-w"></td><td><input type="checkbox" id="mo-th"></td><td><input type="checkbox" id="mo-f"></td></tr>
+                    <tr><td>Afternoon RLA</td><td><input type="checkbox" id="af-m"></td><td><input type="checkbox" id="af-t"></td><td><input type="checkbox" id="af-w"></td><td><input type="checkbox" id="af-th"></td><td><input type="checkbox" id="af-f"></td></tr>
+                </table>
+            </div>
+            <button class="btn btn-danger" onclick="doReset()" style="background:#e74c3c; color:white; padding:10px; border:none; border-radius:5px; width:100%;">Clear Weekly Board</button>
         </div>
-        
-        <!-- CURRICULUM TAB -->
-        <div id="curriculum" class="content">
-            <h2>Curriculum Overview</h2>
-            <p style="color: #666; margin-bottom: 20px;"><strong>GED Preparation Program (Sept 2025 – June 2026)</strong></p>
-            
-            <div class="section">
-                <h3>📚 Program Structure</h3>
-                <ul style="margin-left: 20px; margin-top: 10px;">
-                    <li><strong>Duration:</strong> 9 months (September 2025 – June 2026)</li>
-                    <li><strong>Schedule:</strong> 9:30 AM – 3:50 PM, Monday–Friday</li>
-                    <li><strong>Lunch Break:</strong> 11:40 AM – 12:10 PM</li>
-                    <li><strong>Goal:</strong> Complete GED by summer 2026</li>
-                </ul>
-            </div>
 
-            <div class="section">
-                <h3>📐 Math Rotation</h3>
-                <ul style="margin-left: 20px; margin-top: 10px;">
-                    <li><strong>Nov 2025:</strong> Pre-GED basics (4–6 lessons, 70% mastery target)</li>
-                    <li><strong>Dec 2025:</strong> Decimals & Algebra intro (Full practice test end-month)</li>
-                    <li><strong>Mar 2026:</strong> GED-level Algebra & Geometry (Weekly timed practices)</li>
-                    <li><strong>Apr 2026:</strong> Advanced problem-solving (Ready for GED test)</li>
-                </ul>
-            </div>
-
-            <div class="section">
-                <h3>🔬 Science Rotation</h3>
-                <ul style="margin-left: 20px; margin-top: 10px;">
-                    <li><strong>Jan 2026:</strong> Life & Physical basics (Switch to GED-style quizzes)</li>
-                    <li><strong>Feb 2026:</strong> Earth & Space (Monthly practice test)</li>
-                </ul>
-            </div>
-
-            <div class="section">
-                <h3>📝 Language Arts & Social Studies</h3>
-                <ul style="margin-left: 20px; margin-top: 10px;">
-                    <li><strong>Language Arts:</strong> Ongoing (Nov 2025 – June 2026)</li>
-                    <li><strong>Social Studies:</strong> Introduced in Feb 2026</li>
-                    <li><strong>Typing Club:</strong> Daily integrated practice</li>
-                </ul>
-            </div>
-
-            <div class="section">
-                <h3>📖 Reading & Vocabulary (3:00–3:30 PM)</h3>
-                <ul style="margin-left: 20px; margin-top: 10px;">
-                    <li>Daily reading from current book</li>
-                    <li>GED-style vocabulary building</li>
-                    <li>Comprehension practice</li>
-                </ul>
-            </div>
-
-            <div class="section">
-                <h3>🌍 Duolingo (3:30–3:50 PM, Optional)</h3>
-                <ul style="margin-left: 20px; margin-top: 10px;">
-                    <li>15 minutes daily (Spanish)</li>
-                    <li>Optional/flex time if needed for GED prep</li>
-                </ul>
-            </div>
-        </div>
-        
-        <!-- READING TAB -->
-        <div id="reading" class="content">
-            <h2>Reading & Vocabulary</h2>
-            <div class="section">
-                <h3>Select Current Book</h3>
-                <select id="bookSelect" onchange="displayVocab()"></select>
-            </div>
-            <div id="vocabDisplay"></div>
-        </div>
-        
-        <!-- SCOUTS TAB -->
-        <div id="scouts" class="content">
-            <h2>Merit Badges</h2>
-            <div class="section">
-                <h3>Select Merit Badge</h3>
-                <select id="badgeSelect" onchange="displayBadge()"></select>
-            </div>
-            <div id="badgeDisplay"></div>
-        </div>
-        
-        <!-- MANAGE TAB -->
         <div id="manage" class="content">
-            <h2>Manage Books & Badges</h2>
-            
+            <h2>Cloud Settings</h2>
             <div class="section">
-                <h3>Add New Book</h3>
-                <input type="text" id="bookNameInput" placeholder="Book Title">
-                <textarea id="bookVocabInput" placeholder="Word|Definition|Part&#10;Example: Courage|Bravery|noun" rows="5"></textarea>
-                <button class="btn" onclick="addNewBook()">Add Book</button>
-                <div id="booksList" style="margin-top: 20px;"></div>
+                <p>Firebase Status: <span id="dbLink">Configured</span></p>
+                <p style="font-size: 0.8rem; color: #666; margin-top: 10px;">This dashboard syncs every 3 seconds to the Firebase Realtime Database.</p>
             </div>
-            
-            <div class="section">
-                <h3>Add New Badge</h3>
-                <input type="text" id="badgeNameInput" placeholder="Badge Name">
-                <textarea id="badgeReqsInput" placeholder="Requirement (one per line)" rows="4"></textarea>
-                <button class="btn" onclick="addNewBadge()">Add Badge</button>
-                <div id="badgesList" style="margin-top: 20px;"></div>
-            </div>
-        </div>
-    </div>
-    
-    <div id="resetModal" class="modal">
-        <div class="modal-content">
-            <h3>Reset Week?</h3>
-            <p>This will clear all checkboxes and sync across devices.</p>
-            <button class="modal-btn modal-btn-cancel" onclick="closeResetModal()">Cancel</button>
-            <button class="modal-btn modal-btn-confirm" onclick="doReset()">Reset</button>
         </div>
     </div>
 
     <script>
-        // Firebase Realtime Database URL
         const FIREBASE_URL = 'https://schooling-dashboard-default-rtdb.firebaseio.com';
-        
-        let books = ["Book 1", "Book 2"];
-        let vocabData = [
-            [{w:"Sample",d:"An example",p:"noun"},{w:"Word",d:"A unit of language",p:"noun"}],
-            [{w:"Test",d:"An examination",p:"noun"},{w:"Study",d:"To learn",p:"verb"}]
-        ];
-        let badges = [
-            ["Badge 1",["Requirement 1","Requirement 2"]],
-            ["Badge 2",["Requirement 1","Requirement 2"]]
-        ];
 
-        // UI Functions
         function switchTab(tabName, btn) {
             document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
             document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
             document.getElementById(tabName).classList.add('active');
             btn.classList.add('active');
-            if (tabName === 'manage') updateManageDisplay();
         }
 
-        function displayVocab() {
-            const idx = document.getElementById('bookSelect').value;
-            let html = '<div class="section"><h3>' + books[idx] + ' Vocabulary</h3>';
-            vocabData[idx].forEach((w, i) => {
-                html += '<div class="vocab-item"><strong>' + (i+1) + '. ' + w.w + '</strong> <em>(' + w.p + ')</em><br>' + w.d + '</div>';
-            });
-            html += '</div>';
-            document.getElementById('vocabDisplay').innerHTML = html;
-        }
-
-        function displayBadge() {
-            const idx = document.getElementById('badgeSelect').value;
-            let html = '<div class="section"><h3>' + badges[idx][0] + '</h3><ul style="margin-left:20px;">';
-            badges[idx][1].forEach(r => html += '<li style="margin:8px 0;">' + r + '</li>');
-            html += '</ul></div>';
-            document.getElementById('badgeDisplay').innerHTML = html;
-        }
-
-        function updateSelects() {
-            let html = '';
-            books.forEach((b, i) => html += '<option value="' + i + '">' + b + '</option>');
-            document.getElementById('bookSelect').innerHTML = html;
-            displayVocab();
-
-            html = '';
-            badges.forEach((b, i) => html += '<option value="' + i + '">' + b[0] + '</option>');
-            document.getElementById('badgeSelect').innerHTML = html;
-            displayBadge();
-        }
-
-        function addNewBook() {
-            const name = document.getElementById('bookNameInput').value.trim();
-            const text = document.getElementById('bookVocabInput').value.trim();
-            if (!name || !text) return alert('Enter book name and vocabulary');
-            const words = [];
-            text.split('\n').forEach(line => {
-                const parts = line.split('|').map(x => x.trim());
-                if (parts.length === 3) words.push({w:parts[0],d:parts[1],p:parts[2]});
-            });
-            if (words.length < 2) return alert('Add at least 2 vocabulary words');
-            books.push(name);
-            vocabData.push(words);
-            saveToFirebase();
-            document.getElementById('bookNameInput').value = '';
-            document.getElementById('bookVocabInput').value = '';
-            updateSelects();
-            updateManageDisplay();
-            alert('Added ' + name);
-        }
-
-        function deleteBook(idx) {
-            if (books.length <= 1) return alert('Keep at least one book');
-            if (confirm('Delete ' + books[idx] + '?')) {
-                books.splice(idx, 1);
-                vocabData.splice(idx, 1);
-                saveToFirebase();
-                updateSelects();
-                updateManageDisplay();
-            }
-        }
-
-        function addNewBadge() {
-            const name = document.getElementById('badgeNameInput').value.trim();
-            const text = document.getElementById('badgeReqsInput').value.trim();
-            if (!name || !text) return alert('Enter badge name and requirements');
-            const reqs = text.split('\n').filter(l => l.trim());
-            if (reqs.length < 1) return alert('Add at least 1 requirement');
-            badges.push([name, reqs]);
-            saveToFirebase();
-            document.getElementById('badgeNameInput').value = '';
-            document.getElementById('badgeReqsInput').value = '';
-            updateSelects();
-            updateManageDisplay();
-            alert('Added ' + name);
-        }
-
-        function deleteBadge(idx) {
-            if (badges.length <= 1) return alert('Keep at least one badge');
-            if (confirm('Delete ' + badges[idx][0] + '?')) {
-                badges.splice(idx, 1);
-                saveToFirebase();
-                updateSelects();
-                updateManageDisplay();
-            }
-        }
-
-        function updateManageDisplay() {
-            let html = '';
-            books.forEach((b, i) => {
-                html += '<div class="item-card"><div class="item-info"><h4>' + b + '</h4><p>' + vocabData[i].length + ' words</p></div><button class="btn-delete" onclick="deleteBook(' + i + ')">Delete</button></div>';
-            });
-            document.getElementById('booksList').innerHTML = html;
-
-            html = '';
-            badges.forEach((b, i) => {
-                html += '<div class="item-card"><div class="item-info"><h4>' + b[0] + '</h4><p>' + b[1].length + ' requirements</p></div><button class="btn-delete" onclick="deleteBadge(' + i + ')">Delete</button></div>';
-            });
-            document.getElementById('badgesList').innerHTML = html;
-        }
-
-        function openResetModal() {
-            document.getElementById('resetModal').classList.add('show');
-        }
-
-        function closeResetModal() {
-            document.getElementById('resetModal').classList.remove('show');
-        }
-
-        function doReset() {
-            document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
-            saveCheckboxes();
-            closeResetModal();
-        }
-
-        // Firebase Functions
         function saveCheckboxes() {
             const data = {};
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
@@ -365,78 +112,20 @@
                 method: 'PUT',
                 body: JSON.stringify(data),
                 headers: { 'Content-Type': 'application/json' }
-            })
-            .then(r => {
-                if (!r.ok) throw new Error('Save failed');
-                console.log('Checkboxes saved');
-            })
-            .catch(e => console.error('Checkbox save error:', e));
+            }).catch(e => console.error('Sync Error:', e));
         }
 
         function loadCheckboxes() {
             fetch(FIREBASE_URL + '/checks.json')
-                .then(r => {
-                    if (!r.ok) throw new Error('Load failed');
-                    return r.json();
-                })
+                .then(r => r.json())
                 .then(data => {
                     if (data) {
                         Object.entries(data).forEach(([id, checked]) => {
                             const el = document.getElementById(id);
                             if (el) el.checked = checked;
                         });
-                    }
-                    console.log('Checkboxes loaded');
-                })
-                .catch(e => console.error('Checkbox load error:', e));
-        }
-
-        function saveToFirebase() {
-            Promise.all([
-                fetch(FIREBASE_URL + '/books.json', { 
-                    method: 'PUT', 
-                    body: JSON.stringify(books),
-                    headers: { 'Content-Type': 'application/json' }
-                }),
-                fetch(FIREBASE_URL + '/vocab.json', { 
-                    method: 'PUT', 
-                    body: JSON.stringify(vocabData),
-                    headers: { 'Content-Type': 'application/json' }
-                }),
-                fetch(FIREBASE_URL + '/badges.json', { 
-                    method: 'PUT', 
-                    body: JSON.stringify(badges),
-                    headers: { 'Content-Type': 'application/json' }
-                })
-            ])
-            .then(() => console.log('Data saved to Firebase'))
-            .catch(e => console.error('Firebase save error:', e));
-        }
-
-        function loadFromFirebase() {
-            Promise.all([
-                fetch(FIREBASE_URL + '/books.json').then(r => r.json()),
-                fetch(FIREBASE_URL + '/vocab.json').then(r => r.json()),
-                fetch(FIREBASE_URL + '/badges.json').then(r => r.json())
-            ])
-            .then(([booksData, vocabData2, badgesData]) => {
-                if (booksData) books = booksData;
-                if (vocabData2) vocabData = vocabData2;
-                if (badgesData) badges = badgesData;
-                updateSelects();
-                console.log('Data loaded from Firebase');
-            })
-            .catch(e => console.error('Firebase load error:', e));
-        }
-
-        function checkConnection() {
-            fetch(FIREBASE_URL + '/.json', { method: 'GET' })
-                .then(r => {
-                    if (r.ok) {
                         document.getElementById('syncBadge').textContent = '☁️ Cloud Synced';
                         document.getElementById('syncBadge').classList.add('online');
-                    } else {
-                        throw new Error('Not ok');
                     }
                 })
                 .catch(() => {
@@ -445,21 +134,18 @@
                 });
         }
 
-        // Periodic sync check every 3 seconds
-        setInterval(() => {
-            loadCheckboxes();
-            loadFromFirebase();
-            checkConnection();
-        }, 3000);
+        function doReset() {
+            if(confirm("Reset all weekly progress?")) {
+                document.querySelectorAll('input[type="checkbox"]').forEach(cb => cb.checked = false);
+                saveCheckboxes();
+            }
+        }
 
-        // Initialize
+        // Auto-sync every 3 seconds
+        setInterval(loadCheckboxes, 3000);
+
         window.addEventListener('load', () => {
-            updateSelects();
-            loadFromFirebase();
             loadCheckboxes();
-            updateManageDisplay();
-            checkConnection();
-
             document.querySelectorAll('input[type="checkbox"]').forEach(cb => {
                 cb.addEventListener('change', saveCheckboxes);
             });
