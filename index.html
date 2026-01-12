@@ -3,17 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Benny's GED Master Hub</title>
+    <title>Benny's GED Hub</title>
     <style>
         :root { --math: #667eea; --rla: #ff5e62; --sci: #27ae60; --ss: #f39c12; --bg: #f4f7f6; --success: #2ecc71; }
         * { margin: 0; padding: 0; box-sizing: border-box; font-family: -apple-system, sans-serif; }
         body { background: var(--bg); color: #333; padding-bottom: 60px; }
         .container { max-width: 1000px; margin: 0 auto; padding: 0 20px; }
-
         .hero { background: var(--math); color: white; padding: 40px 20px; text-align: center; border-radius: 0 0 30px 30px; box-shadow: 0 4px 15px rgba(0,0,0,0.2); margin-bottom: 30px; transition: 0.5s; }
         .progress-container { margin: 20px auto 0; background: rgba(255,255,255,0.2); border-radius: 20px; height: 14px; overflow: hidden; max-width: 600px; }
         #progress-bar { background: #fff; width: 0%; height: 100%; transition: width 0.5s; opacity: 0.9; }
-        
         .tabs { display: flex; overflow-x: auto; gap: 8px; margin-top: -25px; margin-bottom: 20px; padding: 5px; scrollbar-width: none; justify-content: center; }
         .tab-btn { padding: 10px 18px; border: none; border-radius: 12px; background: white; font-weight: bold; color: #888; cursor: pointer; box-shadow: 0 4px 10px rgba(0,0,0,0.1); white-space: nowrap; font-size: 0.8rem; }
         .tab-btn.active { color: white; }
@@ -21,129 +19,144 @@
         .active-rla { background: var(--rla) !important; }
         .active-sci { background: var(--sci) !important; }
         .active-ss { background: var(--ss) !important; }
-
         .module-grid { display: none; grid-template-columns: 1fr; gap: 20px; }
         @media (min-width: 768px) { .module-grid { grid-template-columns: 1fr 1fr; } }
         .active-grid { display: grid; }
-
         .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 2px 8px rgba(0,0,0,0.05); height: fit-content; }
         .module-title { font-size: 1.1rem; margin-bottom: 15px; border-bottom: 2px solid #f0f0f0; padding-bottom: 8px; }
         .lesson-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #f9f9f9; }
         .lesson-info h4 { font-size: 0.85rem; font-weight: 600; }
         input[type="checkbox"] { width: 22px; height: 22px; cursor: pointer; accent-color: var(--success); }
-        .sync-badge { font-size: 0.7rem; color: #fff; opacity: 0.8; margin-top: 10px; display: block; }
     </style>
 </head>
 <body>
-
     <div class="hero" id="header">
         <div class="container">
             <h1 id="mainTitle">Math Mission</h1>
             <div class="progress-container"><div id="progress-bar"></div></div>
-            <p style="font-size: 0.9rem; margin-top: 10px;"><span id="done-count">0</span> / 81 Total Lessons Mastered</p>
-            <span class="sync-badge" id="syncStatus">● Syncing with Cloud...</span>
+            <p style="font-size: 0.9rem; margin-top: 10px;"><span id="done-count">0</span> Lessons Complete</p>
         </div>
     </div>
-
     <div class="tabs">
         <button class="tab-btn active active-math" id="mathBtn" onclick="switchSubject('math')">MATH</button>
         <button class="tab-btn" id="rlaBtn" onclick="switchSubject('rla')">RLA</button>
         <button class="tab-btn" id="sciBtn" onclick="switchSubject('sci')">SCIENCE</button>
         <button class="tab-btn" id="ssBtn" onclick="switchSubject('ss')">SOC STUDIES</button>
     </div>
-
     <div class="container">
         <div id="mathGrid" class="module-grid active-grid">
             <div class="card">
-                <h3 class="module-title" style="color:var(--math)">Foundations</h3>
+                <h3 class="module-title" style="color:var(--math)">1. Number Sense</h3>
                 <div class="lesson-row"><h4>Place Value</h4><input type="checkbox" id="m1" class="ged-check"></div>
-                <div class="lesson-row"><h4>Fractions +/-</h4><input type="checkbox" id="m2" class="ged-check"></div>
-                <div class="lesson-row"><h4>Decimals</h4><input type="checkbox" id="m3" class="ged-check"></div>
+                <div class="lesson-row"><h4>Rounding & Estimates</h4><input type="checkbox" id="m2" class="ged-check"></div>
+                <div class="lesson-row"><h4>Fractions +/-</h4><input type="checkbox" id="m3" class="ged-check"></div>
                 <div class="lesson-row"><h4>Fractions x/÷</h4><input type="checkbox" id="m4" class="ged-check"></div>
-                <div class="lesson-row"><h4>Percents & Ratios</h4><input type="checkbox" id="m5" class="ged-check"></div>
-                <div class="lesson-row"><h4>Exponents & Roots</h4><input type="checkbox" id="m6" class="ged-check"></div>
-                <div class="lesson-row"><h4>Order of Operations</h4><input type="checkbox" id="m7" class="ged-check"></div>
+                <div class="lesson-row"><h4>Decimals</h4><input type="checkbox" id="m5" class="ged-check"></div>
+                <div class="lesson-row"><h4>Percents</h4><input type="checkbox" id="m6" class="ged-check"></div>
+                <div class="lesson-row"><h4>Ratios & Proportions</h4><input type="checkbox" id="m7" class="ged-check"></div>
             </div>
             <div class="card">
-                <h3 class="module-title" style="color:var(--math)">Geometry & Algebra</h3>
+                <h3 class="module-title" style="color:var(--math)">2. Geometry & Measurement</h3>
                 <div class="lesson-row"><h4>Perimeter & Area</h4><input type="checkbox" id="m8" class="ged-check"></div>
-                <div class="lesson-row"><h4>Circles</h4><input type="checkbox" id="m9" class="ged-check"></div>
+                <div class="lesson-row"><h4>Circles (Area/Circ)</h4><input type="checkbox" id="m9" class="ged-check"></div>
                 <div class="lesson-row"><h4>Pythagorean Theorem</h4><input type="checkbox" id="m10" class="ged-check"></div>
-                <div class="lesson-row"><h4>Volume & Surface Area</h4><input type="checkbox" id="m11" class="ged-check"></div>
-                <div class="lesson-row"><h4>Linear Equations</h4><input type="checkbox" id="m12" class="ged-check"></div>
-                <div class="lesson-row"><h4>Slope & Intercept</h4><input type="checkbox" id="m13" class="ged-check"></div>
-                <div class="lesson-row"><h4>Probability/Stats</h4><input type="checkbox" id="m14" class="ged-check"></div>
+                <div class="lesson-row"><h4>Volume</h4><input type="checkbox" id="m11" class="ged-check"></div>
+                <div class="lesson-row"><h4>Surface Area</h4><input type="checkbox" id="m12" class="ged-check"></div>
+            </div>
+            <div class="card">
+                <h3 class="module-title" style="color:var(--math)">3. Algebra</h3>
+                <div class="lesson-row"><h4>Variables & Expressions</h4><input type="checkbox" id="m13" class="ged-check"></div>
+                <div class="lesson-row"><h4>Solving 1-Step Eq.</h4><input type="checkbox" id="m14" class="ged-check"></div>
+                <div class="lesson-row"><h4>Multi-Step Equations</h4><input type="checkbox" id="m15" class="ged-check"></div>
+                <div class="lesson-row"><h4>Inequalities</h4><input type="checkbox" id="m16" class="ged-check"></div>
+                <div class="lesson-row"><h4>Polynomials</h4><input type="checkbox" id="m17" class="ged-check"></div>
+                <div class="lesson-row"><h4>Factoring</h4><input type="checkbox" id="m18" class="ged-check"></div>
+            </div>
+            <div class="card">
+                <h3 class="module-title" style="color:var(--math)">4. Graphs & Functions</h3>
+                <div class="lesson-row"><h4>Coordinate Plane</h4><input type="checkbox" id="m19" class="ged-check"></div>
+                <div class="lesson-row"><h4>Slope of a Line</h4><input type="checkbox" id="m20" class="ged-check"></div>
+                <div class="lesson-row"><h4>Equation of a Line</h4><input type="checkbox" id="m21" class="ged-check"></div>
+                <div class="lesson-row"><h4>Functions</h4><input type="checkbox" id="m22" class="ged-check"></div>
+                <div class="lesson-row"><h4>Data, Stats, Probability</h4><input type="checkbox" id="m23" class="ged-check"></div>
+                <div class="lesson-row"><h4>Mean, Median, Mode</h4><input type="checkbox" id="m24" class="ged-check"></div>
             </div>
         </div>
-
         <div id="rlaGrid" class="module-grid">
             <div class="card">
-                <h3 class="module-title" style="color:var(--rla)">Reading & Analysis</h3>
-                <div class="lesson-row"><h4>Reading Comp. Basics</h4><input type="checkbox" id="r1" class="ged-check"></div>
-                <div class="lesson-row"><h4>Main Idea & Details</h4><input type="checkbox" id="r2" class="ged-check"></div>
-                <div class="lesson-row"><h4>Context Clues</h4><input type="checkbox" id="r3" class="ged-check"></div>
+                <h3 class="module-title" style="color:var(--rla)">1. Reading Comprehension</h3>
+                <div class="lesson-row"><h4>Main Idea & Details</h4><input type="checkbox" id="r1" class="ged-check"></div>
+                <div class="lesson-row"><h4>Context Clues</h4><input type="checkbox" id="r2" class="ged-check"></div>
+                <div class="lesson-row"><h4>Inferences & Conclusions</h4><input type="checkbox" id="r3" class="ged-check"></div>
                 <div class="lesson-row"><h4>Author's Purpose</h4><input type="checkbox" id="r4" class="ged-check"></div>
-                <div class="lesson-row"><h4>Tone & Word Choice</h4><input type="checkbox" id="r5" class="ged-check"></div>
-                <div class="lesson-row"><h4>Logic & Arguments</h4><input type="checkbox" id="r6" class="ged-check"></div>
-                <div class="lesson-row"><h4>Comparing Viewpoints</h4><input type="checkbox" id="r7" class="ged-check"></div>
+                <div class="lesson-row"><h4>Tone & Mood</h4><input type="checkbox" id="r5" class="ged-check"></div>
+                <div class="lesson-row"><h4>Comparing Texts</h4><input type="checkbox" id="r6" class="ged-check"></div>
+                <div class="lesson-row"><h4>Evidence-Based Reading</h4><input type="checkbox" id="r7" class="ged-check"></div>
             </div>
             <div class="card">
-                <h3 class="module-title" style="color:var(--rla)">Writing & Grammar</h3>
-                <div class="lesson-row"><h4>GED Essay Introduction</h4><input type="checkbox" id="r8" class="ged-check"></div>
-                <div class="lesson-row"><h4>Drafting Claims</h4><input type="checkbox" id="r9" class="ged-check"></div>
-                <div class="lesson-row"><h4>Punctuation Rules</h4><input type="checkbox" id="r10" class="ged-check"></div>
-                <div class="lesson-row"><h4>Sentence Structure</h4><input type="checkbox" id="r11" class="ged-check"></div>
-                <div class="lesson-row"><h4>RLA Practice Test</h4><input type="checkbox" id="r12" class="ged-check"></div>
+                <h3 class="module-title" style="color:var(--rla)">2. Writing & Grammar</h3>
+                <div class="lesson-row"><h4>Sentence Structure</h4><input type="checkbox" id="r8" class="ged-check"></div>
+                <div class="lesson-row"><h4>Punctuation & Capitalization</h4><input type="checkbox" id="r9" class="ged-check"></div>
+                <div class="lesson-row"><h4>Grammar Usage</h4><input type="checkbox" id="r10" class="ged-check"></div>
+                <div class="lesson-row"><h4>The Extended Response</h4><input type="checkbox" id="r11" class="ged-check"></div>
+                <div class="lesson-row"><h4>Drafting the Essay</h4><input type="checkbox" id="r12" class="ged-check"></div>
+                <div class="lesson-row"><h4>Revising & Editing</h4><input type="checkbox" id="r13" class="ged-check"></div>
             </div>
         </div>
-
         <div id="sciGrid" class="module-grid">
             <div class="card">
-                <h3 class="module-title" style="color:var(--sci)">Life Science</h3>
+                <h3 class="module-title" style="color:var(--sci)">1. Life Science</h3>
                 <div class="lesson-row"><h4>Cell Structures</h4><input type="checkbox" id="s1" class="ged-check"></div>
-                <div class="lesson-row"><h4>Genetics & Heredity</h4><input type="checkbox" id="s2" class="ged-check"></div>
-                <div class="lesson-row"><h4>Punnett Squares</h4><input type="checkbox" id="s3" class="ged-check"></div>
-                <div class="lesson-row"><h4>Evolution & Selection</h4><input type="checkbox" id="s4" class="ged-check"></div>
-                <div class="lesson-row"><h4>Ecosystems</h4><input type="checkbox" id="s5" class="ged-check"></div>
+                <div class="lesson-row"><h4>Cell Functions</h4><input type="checkbox" id="s2" class="ged-check"></div>
+                <div class="lesson-row"><h4>Genetics & Heredity</h4><input type="checkbox" id="s3" class="ged-check"></div>
+                <div class="lesson-row"><h4>DNA & RNA</h4><input type="checkbox" id="s4" class="ged-check"></div>
+                <div class="lesson-row"><h4>Punnett Squares</h4><input type="checkbox" id="s5" class="ged-check"></div>
+                <div class="lesson-row"><h4>Evolution & Natural Selection</h4><input type="checkbox" id="s6" class="ged-check"></div>
+                <div class="lesson-row"><h4>Human Body Systems</h4><input type="checkbox" id="s7" class="ged-check"></div>
+                <div class="lesson-row"><h4>Ecosystems & Energy Flow</h4><input type="checkbox" id="s8" class="ged-check"></div>
             </div>
             <div class="card">
-                <h3 class="module-title" style="color:var(--sci)">Physical & Earth</h3>
-                <div class="lesson-row"><h4>Scientific Method</h4><input type="checkbox" id="s6" class="ged-check"></div>
-                <div class="lesson-row"><h4>Chemical Equations</h4><input type="checkbox" id="s7" class="ged-check"></div>
-                <div class="lesson-row"><h4>Forces & Motion</h4><input type="checkbox" id="s8" class="ged-check"></div>
-                <div class="lesson-row"><h4>Earth's Systems</h4><input type="checkbox" id="s9" class="ged-check"></div>
-                <div class="lesson-row"><h4>Space Science</h4><input type="checkbox" id="s10" class="ged-check"></div>
+                <h3 class="module-title" style="color:var(--sci)">2. Physical & Earth Science</h3>
+                <div class="lesson-row"><h4>Atomic Structure</h4><input type="checkbox" id="s9" class="ged-check"></div>
+                <div class="lesson-row"><h4>Chemical Reactions</h4><input type="checkbox" id="s10" class="ged-check"></div>
+                <div class="lesson-row"><h4>Force, Motion, Energy</h4><input type="checkbox" id="s11" class="ged-check"></div>
+                <div class="lesson-row"><h4>Earth's Systems</h4><input type="checkbox" id="s12" class="ged-check"></div>
+                <div class="lesson-row"><h4>Space & The Universe</h4><input type="checkbox" id="s13" class="ged-check"></div>
+                <div class="lesson-row"><h4>Scientific Method</h4><input type="checkbox" id="s14" class="ged-check"></div>
+                <div class="lesson-row"><h4>Experimental Design</h4><input type="checkbox" id="s15" class="ged-check"></div>
+                <div class="lesson-row"><h4>Interpreting Data</h4><input type="checkbox" id="s16" class="ged-check"></div>
             </div>
         </div>
-
         <div id="ssGrid" class="module-grid">
             <div class="card">
-                <h3 class="module-title" style="color:var(--ss)">Civics & History</h3>
-                <div class="lesson-row"><h4>Types of Govt</h4><input type="checkbox" id="ss1" class="ged-check"></div>
-                <div class="lesson-row"><h4>The Constitution</h4><input type="checkbox" id="ss2" class="ged-check"></div>
-                <div class="lesson-row"><h4>3 Branches of Govt</h4><input type="checkbox" id="ss3" class="ged-check"></div>
-                <div class="lesson-row"><h4>Revolutionary War</h4><input type="checkbox" id="ss4" class="ged-check"></div>
-                <div class="lesson-row"><h4>Civil War & Recon</h4><input type="checkbox" id="ss5" class="ged-check"></div>
+                <h3 class="module-title" style="color:var(--ss)">1. Civics & Government</h3>
+                <div class="lesson-row"><h4>Types of Government</h4><input type="checkbox" id="ss1" class="ged-check"></div>
+                <div class="lesson-row"><h4>Historical Documents</h4><input type="checkbox" id="ss2" class="ged-check"></div>
+                <div class="lesson-row"><h4>The Constitution</h4><input type="checkbox" id="ss3" class="ged-check"></div>
+                <div class="lesson-row"><h4>Bill of Rights</h4><input type="checkbox" id="ss4" class="ged-check"></div>
+                <div class="lesson-row"><h4>The Three Branches</h4><input type="checkbox" id="ss5" class="ged-check"></div>
+                <div class="lesson-row"><h4>Elections & Political Parties</h4><input type="checkbox" id="ss6" class="ged-check"></div>
+                <div class="lesson-row"><h4>Citizenship & Rights</h4><input type="checkbox" id="ss7" class="ged-check"></div>
             </div>
             <div class="card">
-                <h3 class="module-title" style="color:var(--ss)">Geography & Econ</h3>
-                <div class="lesson-row"><h4>Supply & Demand</h4><input type="checkbox" id="ss6" class="ged-check"></div>
-                <div class="lesson-row"><h4>World Geography</h4><input type="checkbox" id="ss7" class="ged-check"></div>
-                <div class="lesson-row"><h4>Modern History</h4><input type="checkbox" id="ss8" class="ged-check"></div>
-                <div class="lesson-row"><h4>Map Reading</h4><input type="checkbox" id="ss9" class="ged-check"></div>
+                <h3 class="module-title" style="color:var(--ss)">2. History & Economics</h3>
+                <div class="lesson-row"><h4>US History: 1776-1877</h4><input type="checkbox" id="ss8" class="ged-check"></div>
+                <div class="lesson-row"><h4>US History: 1877-Present</h4><input type="checkbox" id="ss9" class="ged-check"></div>
+                <div class="lesson-row"><h4>World Wars</h4><input type="checkbox" id="ss10" class="ged-check"></div>
+                <div class="lesson-row"><h4>Cold War Era</h4><input type="checkbox" id="ss11" class="ged-check"></div>
+                <div class="lesson-row"><h4>Basic Economics</h4><input type="checkbox" id="ss12" class="ged-check"></div>
+                <div class="lesson-row"><h4>Supply & Demand</h4><input type="checkbox" id="ss13" class="ged-check"></div>
+                <div class="lesson-row"><h4>Global Geography</h4><input type="checkbox" id="ss14" class="ged-check"></div>
             </div>
         </div>
     </div>
-
     <script>
         const FIREBASE_URL = 'https://schooling-dashboard-default-rtdb.firebaseio.com';
-
         function switchSubject(type) {
             document.querySelectorAll('.module-grid').forEach(g => g.classList.remove('active-grid'));
             document.querySelectorAll('.tab-btn').forEach(b => b.className = 'tab-btn');
             const h = document.getElementById('header');
             const t = document.getElementById('mainTitle');
-
             if(type==='math'){
                 document.getElementById('mathGrid').classList.add('active-grid');
                 document.getElementById('mathBtn').className='tab-btn active active-math';
@@ -163,31 +176,25 @@
             }
             updateUI();
         }
-
         function updateUI() {
             const all = document.querySelectorAll('.ged-check').length;
             const checked = document.querySelectorAll('.ged-check:checked').length;
             document.getElementById('progress-bar').style.width = (checked/all*100) + "%";
             document.getElementById('done-count').textContent = checked;
         }
-
         function save() {
             const d = {}; document.querySelectorAll('.ged-check').forEach(c => d[c.id] = c.checked);
-            fetch(FIREBASE_URL + '/master_sync.json', { method: 'PUT', body: JSON.stringify(d) })
-            .then(() => { document.getElementById('syncStatus').innerHTML = "● Cloud Synced"; });
+            fetch(FIREBASE_URL + '/master_sync.json', { method: 'PUT', body: JSON.stringify(d) });
             updateUI();
         }
-
         function load() {
             fetch(FIREBASE_URL + '/master_sync.json').then(r => r.json()).then(data => {
                 if (data) Object.entries(data).forEach(([id, val]) => {
                     const el = document.getElementById(id); if (el) el.checked = val;
                 });
                 updateUI();
-                document.getElementById('syncStatus').innerHTML = "● Cloud Synced";
             });
         }
-
         setInterval(load, 3000);
         window.onload = () => { load(); document.querySelectorAll('.ged-check').forEach(c => c.addEventListener('change', save)); };
     </script>
