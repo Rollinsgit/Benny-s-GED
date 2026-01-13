@@ -3,39 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Benny's Performance Tracker</title>
+    <title>Benny's Center Stage</title>
     <style>
-        :root { --math: #ff007a; --rla: #7000ff; --sci: #00d4ff; --ss: #ffcc00; --bg: #1a1a1a; --card: #2a2a2a; }
-        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
-        body { font-family: sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 40px; }
-        .status-header { background: #000; padding: 25px 20px; text-align: center; border-bottom: 3px solid var(--math); margin-bottom: 20px; }
-        .progress-outer { background: #333; border-radius: 20px; height: 18px; margin: 10px auto; max-width: 400px; overflow: hidden; border: 1px solid #444; }
-        .bar { background: linear-gradient(90deg, var(--math), var(--rla)); height: 100%; width: 0%; transition: 0.5s ease; }
-        #stat-text { font-weight: bold; color: #aaa; font-size: 0.9rem; letter-spacing: 1px; }
-        .button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 15px; max-width: 600px; margin: 0 auto 25px; }
-        .sub-btn { padding: 15px; border: none; border-radius: 50px; color: white; font-weight: 800; font-size: 0.8rem; cursor: pointer; opacity: 0.4; transition: 0.3s; text-transform: uppercase; border: 2px solid transparent; }
-        .sub-btn.active { opacity: 1; transform: translateY(-3px); border-color: white; }
-        .btn-math { background: var(--math); } .btn-rla { background: var(--rla); } .btn-sci { background: var(--sci); } .btn-ss { background: var(--ss); }
+        :root { --math: #400020; --rla: #1a0040; --sci: #002b40; --ss: #403000; }
+        body { font-family: sans-serif; margin: 0; padding-bottom: 50px; transition: background 0.6s ease; background: var(--math); color: white; }
+        .status-header { background: rgba(0,0,0,0.8); padding: 25px; text-align: center; border-bottom: 2px solid #fff; }
+        .progress-outer { background: #333; border-radius: 20px; height: 18px; margin: 10px auto; max-width: 400px; overflow: hidden; }
+        .bar { background: linear-gradient(90deg, #ff007a, #7000ff); height: 100%; width: 0%; transition: 0.8s; }
+        .button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; max-width: 600px; margin: 0 auto; }
+        .sub-btn { padding: 15px; border: none; border-radius: 50px; color: white; font-weight: 800; cursor: pointer; text-transform: uppercase; border: 1px solid rgba(255,255,255,0.3); }
+        .btn-math { background: #ff007a; } .btn-rla { background: #7000ff; } .btn-sci { background: #00d4ff; } .btn-ss { background: #ffcc00; }
         .container { max-width: 600px; margin: 0 auto; padding: 0 15px; }
         .content { display: none; } .content.active { display: block; }
-        .lesson-card { background: var(--card); margin-bottom: 12px; padding: 16px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; }
-        .lesson-info { display: flex; align-items: center; gap: 15px; flex-grow: 1; cursor: pointer; }
-        input[type="checkbox"] { width: 26px; height: 26px; accent-color: #2ecc71; cursor: pointer; }
-        .lesson-card span { font-weight: 500; color: #efefef; font-size: 0.95rem; line-height: 1.2; }
-        .learn-link { background: #333; border: none; padding: 10px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; }
+        .lesson-card { background: rgba(255,255,255,0.1); margin-bottom: 12px; padding: 20px; border-radius: 15px; display: flex; align-items: center; justify-content: space-between; backdrop-filter: blur(5px); }
+        .lesson-info { display: flex; align-items: center; gap: 20px; flex-grow: 1; cursor: pointer; }
+        input[type="checkbox"] { width: 30px; height: 30px; cursor: pointer; accent-color: #00ff88; }
+        .lesson-card span { font-weight: 500; font-size: 1rem; }
+        .learn-link { background: #444; border: none; border-radius: 50%; width: 50px; height: 50px; color: white; font-size: 1.3rem; cursor: pointer; }
+        #congrats { display: none; position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); font-size: 6rem; z-index: 999; }
     </style>
 </head>
-<body>
+<body id="body-bg">
+<div id="congrats">✨💃🕺✨</div>
 <div class="status-header">
-    <h2 style="margin:0 0 5px 0; letter-spacing: 2px;">BENNY'S CENTER STAGE</h2>
+    <h2 id="header-title">BENNY'S TECHNIQUE (MATH)</h2>
     <div class="progress-outer"><div id="p-bar" class="bar"></div></div>
-    <div id="stat-text">0% Mastered</div>
+    <div id="stat-text">0/22 mastered</div>
 </div>
 <div class="button-grid">
-    <button id="btn-math" class="sub-btn btn-math active" onclick="switchSubject('math')">TECHNIQUE</button>
-    <button id="btn-rla" class="sub-btn btn-rla" onclick="switchSubject('rla')">LYRICS</button>
-    <button id="btn-sci" class="sub-btn btn-sci" onclick="switchSubject('sci')">ENERGY</button>
-    <button id="btn-ss" class="sub-btn btn-ss" onclick="switchSubject('ss')">HISTORY</button>
+    <button class="sub-btn btn-math" onclick="switchSubject('math')">TECHNIQUE</button>
+    <button class="sub-btn btn-rla" onclick="switchSubject('rla')">LYRICS</button>
+    <button class="sub-btn btn-sci" onclick="switchSubject('sci')">ENERGY</button>
+    <button class="sub-btn btn-ss" onclick="switchSubject('ss')">HISTORY</button>
 </div>
 <div class="container">
     <div id="math-list" class="content active"></div>
@@ -50,40 +49,35 @@
         sci: ["The Scientific Method", "Using Data", "Using Statistics", "Understanding Cells", "Human Biology", "DNA, Genes, and Heredity", "Evolution", "Ecology", "Ecosystems", "Geology", "Earth’s Atmosphere", "Earth in the Solar System", "Atoms and Molecules", "Changes and Reactions", "Symbols and Chemical Equations", "Motion and forces", "Energy and Work", "Units and Formulas", "Summary and Practice Test", "Congratulations"],
         ss: ["Reading Resources, Charts and Graphs", "The Early History of America", "The American Revolution", "The Civil War", "The Progressive Era and World War 1", "The Great Depression and World War 2", "The American Civil Rights Movement", "The Cold War and the Modern World", "Ancient Civilizations", "Human Migration", "National Borders", "People and the Environment", "The United States Government", "Citizenship", "Types of Government", "Political Parties and Public Policy", "Revolutions that Changed the Economy", "Taxes", "Final Test and Practice Quiz", "Congratulations"]
     };
-
     let activeSub = 'math';
+    const subNames = { math: "TECHNIQUE (MATH)", rla: "LYRICS (RLA)", sci: "ENERGY (SCI)", ss: "HISTORY (SS)" };
     function init() {
         Object.keys(dataSet).forEach(sub => {
             const list = document.getElementById(sub + '-list');
-            const saved = JSON.parse(localStorage.getItem('benny_studio_vfinal_' + sub)) || {};
+            const saved = JSON.parse(localStorage.getItem('ben_v7_' + sub)) || {};
             dataSet[sub].forEach((text, i) => {
-                const id = `b_fn_${sub}_${i}`;
+                const id = `b_${sub}_${i}`;
                 const card = document.createElement('div');
-                card.className = `lesson-card`;
-                card.innerHTML = `
-                    <div class="lesson-info" onclick="toggle('${id}')">
-                        <input type="checkbox" id="${id}" ${saved[id] ? 'checked' : ''} onchange="save()">
-                        <span>Routine ${i+1}: ${text}</span>
-                    </div>
-                    <button class="learn-link" onclick="copyAndOpen('GED ${sub.toUpperCase()} ${text}')">✨</button>`;
+                card.className = 'lesson-card';
+                card.innerHTML = `<div class="lesson-info" onclick="toggleCheckbox('${id}')"><input type="checkbox" id="${id}" ${saved[id] ? 'checked' : ''} onclick="event.stopPropagation(); saveProgress();"><span>Routine ${i+1}: ${text}</span></div><button class="learn-link" onclick="copyAndOpen('GED ${sub.toUpperCase()} ${text}')">✨</button>`;
                 list.appendChild(card);
             });
         });
         updateUI();
     }
-    function toggle(id) { const cb = document.getElementById(id); if(cb) { cb.checked = !cb.checked; save(); } }
-    function save() {
+    function toggleCheckbox(id) { const cb = document.getElementById(id); cb.checked = !cb.checked; saveProgress(); }
+    function saveProgress() {
         const data = {};
         document.querySelectorAll(`#${activeSub}-list input`).forEach(cb => { data[cb.id] = cb.checked; });
-        localStorage.setItem('benny_studio_vfinal_' + activeSub, JSON.stringify(data));
+        localStorage.setItem('ben_v7_' + activeSub, JSON.stringify(data));
         updateUI();
     }
     function switchSubject(sub) {
         activeSub = sub;
         document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
         document.getElementById(sub + '-list').classList.add('active');
-        document.querySelectorAll('.sub-btn').forEach(b => b.classList.remove('active'));
-        document.getElementById('btn-' + sub).classList.add('active');
+        document.getElementById('body-bg').style.background = `var(--${sub})`;
+        document.getElementById('header-title').innerText = `BENNY'S ${subNames[sub]}`;
         updateUI();
     }
     function updateUI() {
@@ -92,7 +86,12 @@
         const checked = currentList.querySelectorAll('input:checked').length;
         const pct = Math.round((checked / total) * 100) || 0;
         document.getElementById('p-bar').style.width = pct + '%';
-        document.getElementById('stat-text').innerText = `${activeSub.toUpperCase()} MASTERED: ${checked}/${total} (${pct}%)`;
+        document.getElementById('stat-text').innerText = `${checked}/${total} mastered (${pct}%)`;
+        if (pct === 100) { triggerCongrats(); }
+    }
+    function triggerCongrats() {
+        const c = document.getElementById('congrats'); c.style.display = 'block';
+        setTimeout(() => { c.style.display = 'none'; }, 3000);
     }
     function copyAndOpen(phrase) {
         const el = document.createElement('textarea'); el.value = phrase; document.body.appendChild(el);
