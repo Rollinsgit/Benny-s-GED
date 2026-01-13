@@ -18,8 +18,7 @@
         }
         .progress-outer { 
             background: #333; border-radius: 20px; height: 18px; 
-            margin: 10px auto; max-width: 400px; overflow: hidden;
-            border: 1px solid #444;
+            margin: 10px auto; max-width: 400px; overflow: hidden; border: 1px solid #444;
         }
         .bar { 
             background: linear-gradient(90deg, var(--math), var(--rla)); 
@@ -50,10 +49,8 @@
         }
         .lesson-info { display: flex; align-items: center; gap: 15px; flex-grow: 1; cursor: pointer; }
         
-        /* Larger Neon Checkbox */
         input[type="checkbox"] { 
             width: 26px; height: 26px; accent-color: #2ecc71; cursor: pointer; 
-            filter: drop-shadow(0 0 5px rgba(46, 204, 113, 0.5));
         }
 
         .lesson-card span { font-weight: 500; color: #efefef; font-size: 1rem; }
@@ -88,10 +85,36 @@
 
 <script>
     const dataSet = {
-        math: ["Whole Numbers", "Fractions", "Decimals", "Multiplication", "Division", "Order of Operations", "Equations", "Exponents", "Square Roots", "Slopes", "Ratios", "Word Problems"],
-        rla: ["Vocabulary", "Analyzing Text", "Themes", "Cause & Effect", "Evidence", "Verb Tenses", "Punctuation", "Essays"],
-        sci: ["Scientific Method", "Cells", "Human Biology", "DNA", "Evolution", "Ecology", "Geology", "Atmosphere", "Solar System", "Chemical Reactions", "Motion & Forces"],
-        ss: ["Early Am. History", "Civil War", "WW1 & WW2", "Civil Rights", "US Government", "Political Parties", "Taxes"]
+        math: [
+            "Whole Numbers", "Fractions: Adding & Subtracting", "Decimals", 
+            "Multiplication", "Division", "Factors and Multiples", 
+            "Denominators and Converting Fractions", "Like and Unlike Terms", 
+            "Order of Operations", "Factoring and Solving Equations", "Absolute Value", 
+            "Multiplying and Dividing Fractions", "Exponents", "Exponent Rules", 
+            "Squares & Square Roots", "Cubes and Cube Roots", "Functions and Slopes", 
+            "Rates and Unit Rates", "Proportions and Ratios", "Word Problems and Inequalities"
+        ],
+        rla: [
+            "Vocabulary Questions", "Analyzing Text", "Identifying Themes & Main Ideas", 
+            "Parts Of The Text", "Expressing Opinions", "Cause & Effect", 
+            "Evidence and Explanation", "Verb Tenses", "Run-ons & Fragments", 
+            "Capitalization", "Punctuation", "Writing the Parts of an Essay"
+        ],
+        sci: [
+            "Scientific Method", "Using Data", "Using Statistics", 
+            "Understanding Cells", "Human Biology", "DNA & Heredity", 
+            "Evolution", "Ecology", "Ecosystems", "Geology", 
+            "Earth’s Atmosphere", "Earth in Solar System", "Atoms & Molecules", 
+            "Chemical Changes & Reactions", "Symbols & Equations", "Motion & Forces", 
+            "Energy & Work", "Units & Formulas"
+        ],
+        ss: [
+            "Reading Charts & Graphs", "Early American History", "American Revolution", 
+            "US Civil War", "Progressive Era & WW1", "Great Depression & WW2", 
+            "Civil Rights Movement", "Cold War", "Ancient Civilizations", 
+            "Human Migration", "National Borders", "US Government", 
+            "US Citizenship", "Types of Government", "Political Parties", "Taxes"
+        ]
     };
 
     let activeSub = 'math';
@@ -99,10 +122,10 @@
     function init() {
         Object.keys(dataSet).forEach(sub => {
             const list = document.getElementById(sub + '-list');
-            const saved = JSON.parse(localStorage.getItem('benny_dance_' + sub)) || {};
+            const saved = JSON.parse(localStorage.getItem('benny_dance_v3_' + sub)) || {};
             
             dataSet[sub].forEach((text, i) => {
-                const id = `b_dance_${sub}_${i}`;
+                const id = `b_dn_${sub}_${i}`;
                 const card = document.createElement('div');
                 card.className = `lesson-card`;
                 
@@ -121,17 +144,18 @@
 
     function toggle(id) {
         const cb = document.getElementById(id);
-        cb.checked = !cb.checked;
-        save();
+        if(cb) {
+            cb.checked = !cb.checked;
+            save();
+        }
     }
 
     function save() {
         const data = {};
-        // Find all checkboxes in the current active list
         document.querySelectorAll(`#${activeSub}-list input`).forEach(cb => {
             data[cb.id] = cb.checked;
         });
-        localStorage.setItem('benny_dance_' + activeSub, JSON.stringify(data));
+        localStorage.setItem('benny_dance_v3_' + activeSub, JSON.stringify(data));
         updateUI();
     }
 
