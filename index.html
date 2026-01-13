@@ -5,160 +5,79 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Benny's Performance Tracker</title>
     <style>
-        :root { 
-            --math: #ff007a; --rla: #7000ff; --sci: #00d4ff; --ss: #ffcc00; 
-            --bg: #1a1a1a; --card: #2a2a2a;
-        }
+        :root { --math: #ff007a; --rla: #7000ff; --sci: #00d4ff; --ss: #ffcc00; --bg: #1a1a1a; --card: #2a2a2a; }
         * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
         body { font-family: sans-serif; background: var(--bg); color: white; margin: 0; padding-bottom: 40px; }
-        
-        .status-header {
-            background: #000; padding: 25px 20px; text-align: center;
-            border-bottom: 3px solid var(--math); margin-bottom: 20px;
-        }
-        .progress-outer { 
-            background: #333; border-radius: 20px; height: 18px; 
-            margin: 10px auto; max-width: 400px; overflow: hidden; border: 1px solid #444;
-        }
-        .bar { 
-            background: linear-gradient(90deg, var(--math), var(--rla)); 
-            height: 100%; width: 0%; transition: 0.5s ease;
-        }
+        .status-header { background: #000; padding: 25px 20px; text-align: center; border-bottom: 3px solid var(--math); margin-bottom: 20px; }
+        .progress-outer { background: #333; border-radius: 20px; height: 18px; margin: 10px auto; max-width: 400px; overflow: hidden; border: 1px solid #444; }
+        .bar { background: linear-gradient(90deg, var(--math), var(--rla)); height: 100%; width: 0%; transition: 0.5s ease; }
         #stat-text { font-weight: bold; color: #aaa; font-size: 0.9rem; letter-spacing: 1px; }
-
-        .button-grid {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 12px;
-            padding: 0 15px; max-width: 600px; margin: 0 auto 25px;
-        }
-        .sub-btn {
-            padding: 15px; border: none; border-radius: 50px; color: white;
-            font-weight: 800; font-size: 0.85rem; cursor: pointer; opacity: 0.4;
-            transition: 0.3s; text-transform: uppercase; border: 2px solid transparent;
-        }
+        .button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 15px; max-width: 600px; margin: 0 auto 25px; }
+        .sub-btn { padding: 15px; border: none; border-radius: 50px; color: white; font-weight: 800; font-size: 0.8rem; cursor: pointer; opacity: 0.4; transition: 0.3s; text-transform: uppercase; border: 2px solid transparent; }
         .sub-btn.active { opacity: 1; transform: translateY(-3px); border-color: white; }
-        .btn-math { background: var(--math); } .btn-rla { background: var(--rla); }
-        .btn-sci { background: var(--sci); } .btn-ss { background: var(--ss); }
-
+        .btn-math { background: var(--math); } .btn-rla { background: var(--rla); } .btn-sci { background: var(--sci); } .btn-ss { background: var(--ss); }
         .container { max-width: 600px; margin: 0 auto; padding: 0 15px; }
-        .content { display: none; }
-        .content.active { display: block; }
-
-        .lesson-card { 
-            background: var(--card); margin-bottom: 12px; padding: 16px; 
-            border-radius: 12px; display: flex; align-items: center; justify-content: space-between;
-        }
+        .content { display: none; } .content.active { display: block; }
+        .lesson-card { background: var(--card); margin-bottom: 12px; padding: 16px; border-radius: 12px; display: flex; align-items: center; justify-content: space-between; }
         .lesson-info { display: flex; align-items: center; gap: 15px; flex-grow: 1; cursor: pointer; }
-        
-        input[type="checkbox"] { 
-            width: 26px; height: 26px; accent-color: #2ecc71; cursor: pointer; 
-        }
-
-        .lesson-card span { font-weight: 500; color: #efefef; font-size: 1rem; }
-        .learn-link {
-            background: #333; border: none; padding: 10px; border-radius: 50%;
-            font-size: 1.2rem; cursor: pointer; width: 45px; height: 45px;
-            display: flex; align-items: center; justify-content: center;
-        }
+        input[type="checkbox"] { width: 26px; height: 26px; accent-color: #2ecc71; cursor: pointer; }
+        .lesson-card span { font-weight: 500; color: #efefef; font-size: 0.95rem; line-height: 1.2; }
+        .learn-link { background: #333; border: none; padding: 10px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; width: 45px; height: 45px; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body>
-
 <div class="status-header">
     <h2 style="margin:0 0 5px 0; letter-spacing: 2px;">BENNY'S CENTER STAGE</h2>
     <div class="progress-outer"><div id="p-bar" class="bar"></div></div>
     <div id="stat-text">0% Mastered</div>
 </div>
-
 <div class="button-grid">
     <button id="btn-math" class="sub-btn btn-math active" onclick="switchSubject('math')">TECHNIQUE</button>
     <button id="btn-rla" class="sub-btn btn-rla" onclick="switchSubject('rla')">LYRICS</button>
     <button id="btn-sci" class="sub-btn btn-sci" onclick="switchSubject('sci')">ENERGY</button>
     <button id="btn-ss" class="sub-btn btn-ss" onclick="switchSubject('ss')">HISTORY</button>
 </div>
-
 <div class="container">
     <div id="math-list" class="content active"></div>
     <div id="rla-list" class="content"></div>
     <div id="sci-list" class="content"></div>
     <div id="ss-list" class="content"></div>
 </div>
-
 <script>
     const dataSet = {
-        math: [
-            "Whole Numbers", "Fractions: Adding & Subtracting", "Decimals", 
-            "Multiplication", "Division", "Factors and Multiples", 
-            "Denominators and Converting Fractions", "Like and Unlike Terms", 
-            "Order of Operations", "Factoring and Solving Equations", "Absolute Value", 
-            "Multiplying and Dividing Fractions", "Exponents", "Exponent Rules", 
-            "Squares & Square Roots", "Cubes and Cube Roots", "Functions and Slopes", 
-            "Rates and Unit Rates", "Proportions and Ratios", "Word Problems and Inequalities"
-        ],
-        rla: [
-            "Vocabulary Questions", "Analyzing Text", "Identifying Themes & Main Ideas", 
-            "Parts Of The Text", "Expressing Opinions", "Cause & Effect", 
-            "Evidence and Explanation", "Verb Tenses", "Run-ons & Fragments", 
-            "Capitalization", "Punctuation", "Writing the Parts of an Essay"
-        ],
-        sci: [
-            "Scientific Method", "Using Data", "Using Statistics", 
-            "Understanding Cells", "Human Biology", "DNA & Heredity", 
-            "Evolution", "Ecology", "Ecosystems", "Geology", 
-            "Earth’s Atmosphere", "Earth in Solar System", "Atoms & Molecules", 
-            "Chemical Changes & Reactions", "Symbols & Equations", "Motion & Forces", 
-            "Energy & Work", "Units & Formulas"
-        ],
-        ss: [
-            "Reading Charts & Graphs", "Early American History", "American Revolution", 
-            "US Civil War", "Progressive Era & WW1", "Great Depression & WW2", 
-            "Civil Rights Movement", "Cold War", "Ancient Civilizations", 
-            "Human Migration", "National Borders", "US Government", 
-            "US Citizenship", "Types of Government", "Political Parties", "Taxes"
-        ]
+        math: ["Whole Numbers", "Fractions: Adding & Subtracting", "Decimals", "Multiplication", "Division", "Factors and Multiples", "Using Denominators and Converting Fractions", "Like and Unlike Terms", "Order of Operations", "Factoring and Solving Equations", "Absolute Value", "Multiplying and Dividing Fractions", "Exponents", "Exponent Rules", "Squares & Square Roots", "Cubes, Cube Roots, and Volume", "Functions and Slopes", "Rates and Unit Rates", "Proportions and Ratios", "Review Multi–step Word Problems and Inequalities", "Test Prep & Practice Quiz", "Congratulations"],
+        rla: ["Vocabulary Questions", "Analyzing Text", "Identifying Themes and Main Ideas", "Parts Of The Text", "Expressing and Influencing Opinions", "Sequence and Cause and Effect", "Evidence and Explanation", "Verb Tenses", "Avoiding Sentence Run-ons and Fragments", "Capitalization", "Punctuation", "Getting Ready to Write", "Writing the Parts of an Essay", "Using Transition Words and Phrases", "Points of View", "Final Practice Quiz", "Congratulations!"],
+        sci: ["The Scientific Method", "Using Data", "Using Statistics", "Understanding Cells", "Human Biology", "DNA, Genes, and Heredity", "Evolution", "Ecology", "Ecosystems", "Geology", "Earth’s Atmosphere", "Earth in the Solar System", "Atoms and Molecules", "Changes and Reactions", "Symbols and Chemical Equations", "Motion and forces", "Energy and Work", "Units and Formulas", "Summary and Practice Test", "Congratulations"],
+        ss: ["Reading Resources, Charts and Graphs", "The Early History of America", "The American Revolution", "The Civil War", "The Progressive Era and World War 1", "The Great Depression and World War 2", "The American Civil Rights Movement", "The Cold War and the Modern World", "Ancient Civilizations", "Human Migration", "National Borders", "People and the Environment", "The United States Government", "Citizenship", "Types of Government", "Political Parties and Public Policy", "Revolutions that Changed the Economy", "Taxes", "Final Test and Practice Quiz", "Congratulations"]
     };
 
     let activeSub = 'math';
-
     function init() {
         Object.keys(dataSet).forEach(sub => {
             const list = document.getElementById(sub + '-list');
-            const saved = JSON.parse(localStorage.getItem('benny_dance_v3_' + sub)) || {};
-            
+            const saved = JSON.parse(localStorage.getItem('benny_studio_vfinal_' + sub)) || {};
             dataSet[sub].forEach((text, i) => {
-                const id = `b_dn_${sub}_${i}`;
+                const id = `b_fn_${sub}_${i}`;
                 const card = document.createElement('div');
                 card.className = `lesson-card`;
-                
                 card.innerHTML = `
                     <div class="lesson-info" onclick="toggle('${id}')">
                         <input type="checkbox" id="${id}" ${saved[id] ? 'checked' : ''} onchange="save()">
                         <span>Routine ${i+1}: ${text}</span>
                     </div>
-                    <button class="learn-link" onclick="copyAndOpen('GED ${sub.toUpperCase()} ${text}')">✨</button>
-                `;
+                    <button class="learn-link" onclick="copyAndOpen('GED ${sub.toUpperCase()} ${text}')">✨</button>`;
                 list.appendChild(card);
             });
         });
         updateUI();
     }
-
-    function toggle(id) {
-        const cb = document.getElementById(id);
-        if(cb) {
-            cb.checked = !cb.checked;
-            save();
-        }
-    }
-
+    function toggle(id) { const cb = document.getElementById(id); if(cb) { cb.checked = !cb.checked; save(); } }
     function save() {
         const data = {};
-        document.querySelectorAll(`#${activeSub}-list input`).forEach(cb => {
-            data[cb.id] = cb.checked;
-        });
-        localStorage.setItem('benny_dance_v3_' + activeSub, JSON.stringify(data));
+        document.querySelectorAll(`#${activeSub}-list input`).forEach(cb => { data[cb.id] = cb.checked; });
+        localStorage.setItem('benny_studio_vfinal_' + activeSub, JSON.stringify(data));
         updateUI();
     }
-
     function switchSubject(sub) {
         activeSub = sub;
         document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
@@ -167,7 +86,6 @@
         document.getElementById('btn-' + sub).classList.add('active');
         updateUI();
     }
-
     function updateUI() {
         const currentList = document.getElementById(activeSub + '-list');
         const total = currentList.querySelectorAll('input').length;
@@ -176,17 +94,11 @@
         document.getElementById('p-bar').style.width = pct + '%';
         document.getElementById('stat-text').innerText = `${activeSub.toUpperCase()} MASTERED: ${checked}/${total} (${pct}%)`;
     }
-
     function copyAndOpen(phrase) {
-        const el = document.createElement('textarea');
-        el.value = phrase;
-        document.body.appendChild(el);
-        el.select();
-        document.execCommand('copy');
-        document.body.removeChild(el);
+        const el = document.createElement('textarea'); el.value = phrase; document.body.appendChild(el);
+        el.select(); document.execCommand('copy'); document.body.removeChild(el);
         window.open("https://learning.google.com/experiments/learn-about", "_blank");
     }
-
     init();
 </script>
 </body>
