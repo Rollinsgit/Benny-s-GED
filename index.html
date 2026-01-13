@@ -10,7 +10,7 @@
         .status-header { background: rgba(0,0,0,0.9); padding: 20px; text-align: center; border-bottom: 2px solid #ff007a; position: sticky; top: 0; z-index: 100; }
         .progress-outer { background: #333; border-radius: 20px; height: 18px; margin: 10px auto; max-width: 400px; overflow: hidden; }
         .bar { background: linear-gradient(90deg, #ff007a, #7000ff); height: 100%; width: 0%; transition: 0.8s; }
-        .sync-badge { font-size: 0.7rem; color: #00ff88; margin-top: 5px; letter-spacing: 1px; }
+        .sync-badge { font-size: 0.7rem; color: #00ff88; margin-top: 5px; letter-spacing: 1px; font-weight: bold; }
         .button-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; padding: 15px; max-width: 600px; margin: 0 auto; }
         .sub-btn { padding: 15px; border: none; border-radius: 50px; color: white; font-weight: bold; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); }
         .btn-math { background: #ff007a; } .btn-rla { background: #7000ff; } .btn-sci { background: #00d4ff; } .btn-ss { background: #ffcc00; }
@@ -19,6 +19,7 @@
         .lesson-card { background: rgba(255,255,255,0.1); margin-bottom: 12px; padding: 15px; border-radius: 15px; display: flex; align-items: center; justify-content: space-between; backdrop-filter: blur(10px); }
         .lesson-info { display: flex; align-items: center; gap: 15px; flex-grow: 1; cursor: pointer; }
         
+        /* Unified Mobile-Ready Checkboxes */
         input[type="checkbox"] { 
             appearance: none; -webkit-appearance: none; width: 35px; height: 35px; 
             border: 3px solid #555; border-radius: 10px; background: rgba(0,0,0,0.3); cursor: pointer; 
@@ -26,8 +27,9 @@
         }
         input[type="checkbox"]:checked { background: #00ff88; border-color: #00cc6a; }
         input[type="checkbox"]:checked::after { content: '✔'; position: absolute; color: black; font-size: 22px; left: 6px; top: -1px; }
+
         .lesson-card span { font-size: 0.95rem; font-weight: 500; }
-        .learn-link { background: rgba(255,255,255,0.1); border: none; border-radius: 50%; width: 45px; height: 45px; color: white; font-size: 1.3rem; cursor: pointer; }
+        .learn-link { background: rgba(255,255,255,0.1); border: none; border-radius: 50%; width: 45px; height: 45px; color: white; font-size: 1.3rem; cursor: pointer; display: flex; align-items: center; justify-content: center; }
     </style>
 </head>
 <body id="body-bg">
@@ -35,8 +37,8 @@
 <div class="status-header" id="status-bar">
     <h2 id="header-title" style="margin:0; font-size: 1.1rem;">BENNY: TECHNIQUE (MATH)</h2>
     <div class="progress-outer"><div id="p-bar" class="bar"></div></div>
-    <div id="stat-text" style="font-size: 0.8rem; opacity: 0.8;">0/22 mastered</div>
-    <div class="sync-badge">LIVE CLOUD CONNECTION</div>
+    <div id="stat-text" style="font-size: 0.8rem; opacity: 0.8;">Loading...</div>
+    <div class="sync-badge" id="sync-status">☁️ CLOUD SYNC ACTIVE</div>
 </div>
 
 <div class="button-grid">
@@ -54,11 +56,19 @@
 </div>
 
 <script>
+    // Using your original Firebase URL
     const FIREBASE_URL = 'https://schooling-dashboard-default-rtdb.firebaseio.com/benny';
-    const subColors = { math: "#ff007a", rla: "#7000ff", sci: "#00d4ff", ss: "#ffcc00" };
-    const dataSet = { /* ... same data as Mitchell ... */ };
+    
+    const dataSet = {
+        math: ["Whole Numbers", "Fractions: Adding & Subtracting", "Decimals", "Multiplication", "Division", "Factors and Multiples", "Using Denominators and Converting Fractions", "Like and Unlike Terms", "Order of Operations", "Factoring and Solving Equations", "Absolute Value", "Multiplying and Dividing Fractions", "Exponents", "Exponent Rules", "Squares & Square Roots", "Cubes, Cube Roots, and Volume", "Functions and Slopes", "Rates and Unit Rates", "Proportions and Ratios", "Review Multi–step Word Problems and Inequalities", "Test Prep & Practice Quiz", "Congratulations"],
+        rla: ["Vocabulary Questions", "Analyzing Text", "Identifying Themes and Main Ideas", "Parts Of The Text", "Expressing and Influencing Opinions", "Sequence and Cause and Effect", "Evidence and Explanation", "Verb Tenses", "Avoiding Sentence Run-ons and Fragments", "Capitalization", "Punctuation", "Getting Ready to Write", "Writing the Parts of an Essay", "Using Transition Words and Phrases", "Points of View", "Final Practice Quiz", "Congratulations!"],
+        sci: ["The Scientific Method", "Using Data", "Using Statistics", "Understanding Cells", "Human Biology", "DNA, Genes, and Heredity", "Evolution", "Ecology", "Ecosystems", "Geology", "Earth’s Atmosphere", "Earth in the Solar System", "Atoms and Molecules", "Changes and Reactions", "Symbols and Chemical Equations", "Motion and forces", "Energy and Work", "Units and Formulas", "Summary and Practice Test", "Congratulations"],
+        ss: ["Reading Resources, Charts and Graphs", "The Early History of America", "The American Revolution", "The Civil War", "The Progressive Era and World War 1", "The Great Depression and World War 2", "The American Civil Rights Movement", "The Cold War and the Modern World", "Ancient Civilizations", "Human Migration", "National Borders", "People and the Environment", "The United States Government", "Citizenship", "Types of Government", "Political Parties and Public Policy", "Revolutions that Changed the Economy", "Taxes", "Final Test and Practice Quiz", "Congratulations"]
+    };
 
     let activeSub = 'math';
+    const subNames = { math: "TECHNIQUE (MATH)", rla: "LYRICS (RLA)", sci: "ENERGY (SCI)", ss: "HISTORY (SS)" };
+    const subColors = { math: "#ff007a", rla: "#7000ff", sci: "#00d4ff", ss: "#ffcc00" };
 
     function init() {
         Object.keys(dataSet).forEach(sub => {
@@ -77,6 +87,7 @@
             });
         });
         loadFromCloud();
+        // Constant sync like your original code
         setInterval(loadFromCloud, 5000);
     }
 
@@ -88,8 +99,13 @@
 
     function saveToCloud() {
         const data = {};
-        document.querySelectorAll('input[type="checkbox"]').forEach(cb => { data[cb.id] = cb.checked; });
-        fetch(`${FIREBASE_URL}/checks.json`, { method: 'PUT', body: JSON.stringify(data) }).then(() => updateUI());
+        document.querySelectorAll('input[type="checkbox"]').forEach(cb => { 
+            data[cb.id] = cb.checked; 
+        });
+        fetch(`${FIREBASE_URL}/checks.json`, { 
+            method: 'PUT', 
+            body: JSON.stringify(data) 
+        }).then(() => updateUI());
     }
 
     function loadFromCloud() {
@@ -103,6 +119,10 @@
                     });
                 }
                 updateUI();
+                document.getElementById('sync-status').innerText = "☁️ CLOUD SYNCED";
+            })
+            .catch(() => {
+                document.getElementById('sync-status').innerText = "⚠️ OFFLINE";
             });
     }
 
@@ -111,6 +131,7 @@
         document.querySelectorAll('.content').forEach(c => c.classList.remove('active'));
         document.getElementById(sub + '-list').classList.add('active');
         document.getElementById('body-bg').style.background = `var(--${sub})`;
+        document.getElementById('header-title').innerText = `BENNY: ${subNames[sub]}`;
         document.getElementById('status-bar').style.borderBottomColor = subColors[sub];
         updateUI();
     }
